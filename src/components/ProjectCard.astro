@@ -14,35 +14,86 @@ type Props = {
 
 const { project, locale, t, delay = 0 } = Astro.props;
 const href = paths[locale].project(project.slug);
+const dateFmt = new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", {
+  month: "short",
+  year: "numeric",
+});
+const pushed = new Date(`${project.pushed}T00:00:00Z`);
+const created = new Date(`${project.created}T00:00:00Z`);
+const meta: { label: string; value: number }[] = [
+  { label: t.projectsSection.stars, value: project.stars },
+  { label: t.projectsSection.forks, value: project.forks },
+  { label: t.projectsPage.issues, value: project.openIssues },
+  { label: t.projectsPage.contributors, value: project.contributors },
+];
 ---
 
 <Reveal
   delay={delay}
-  class="group flex h-full flex-col justify-between rounded-2xl border border-line bg-panel p-6 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-2 hover:border-line-strong"
+  data-lang={project.language}
+  class="repo group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-panel transition-[transform,border-color,opacity] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:border-line-strong"
 >
-  <div>
-    <div class="flex items-start justify-between gap-4">
-      <h3 class="text-xl font-semibold tracking-tight">{project.name}</h3>
-      <span class="font-mono text-xs text-muted">{project.language}</span>
-    </div>
-    <p class="mt-3 text-base text-muted">{project.tagline[locale]}</p>
+  <div class="art relative h-28 overflow-hidden border-b border-line sm:h-32">
+    <img
+      src={`/world/${project.art}.webp`}
+      alt=""
+      width="1280"
+      height="704"
+      loading="lazy"
+      decoding="async"
+      class="h-full w-full object-cover opacity-55 grayscale transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04] group-hover:opacity-90"
+    />
+    <span class="art__veil absolute inset-0" aria-hidden="true"></span>
+    <span class="absolute right-3 top-3 rounded-full border border-line bg-night/80 px-2 py-1 font-mono text-xs uppercase tracking-widest text-ink">
+      {project.language}
+    </span>
   </div>
 
-  <div class="mt-6 flex items-center justify-between gap-4">
-    <div class="flex items-center gap-4 font-mono text-xs text-muted">
-      <span class="inline-flex items-center gap-2">
-        <Icons name="star" class="h-4 w-4 text-accent" />{project.stars}
+  <div class="flex flex-1 flex-col p-6">
+    <h3 class="text-xl font-semibold tracking-tight">{project.name}</h3>
+    <p class="mt-3 text-base text-muted">{project.tagline[locale]}</p>
+
+    <dl class="mt-6 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-line pt-5">
+      {
+        meta.map((row) => (
+          <div class="flex items-baseline justify-between gap-2">
+            <dt class="font-mono text-xs uppercase tracking-widest text-muted">{row.label}</dt>
+            <dd class="font-mono text-sm text-ink">{row.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <p class="mt-4 font-mono text-xs uppercase tracking-widest text-muted">
+      {t.project.updated} {dateFmt.format(pushed)}
+      <span class="text-accent" aria-hidden="true">&middot;</span>
+      {t.projectsPage.created} {created.getUTCFullYear()}
+      {
+        project.license && (
+          <>
+            <span class="text-accent" aria-hidden="true">&middot;</span> {project.license}
+          </>
+        )
+      }
+    </p>
+
+    <div class="mt-6 flex items-center justify-between gap-4 pt-1">
+      <span class="font-mono text-xs uppercase tracking-widest text-muted">
+        {project.release ? `${t.projectsPage.release} ${project.release}` : `${project.stars} ★`}
       </span>
-      <span class="inline-flex items-center gap-2">
-        <Icons name="fork" class="h-4 w-4" />{project.forks}
-      </span>
+      <a
+        href={href}
+        class="inline-flex items-center gap-2 rounded-full border border-line px-3 py-2 text-sm font-semibold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:border-accent group-hover:text-ink hover:underline active:scale-[0.98]"
+      >
+        {t.projectsSection.detail}
+        <Icons name="arrow" class="h-4 w-4" />
+      </a>
     </div>
-    <a
-      href={href}
-      class="inline-flex items-center gap-2 rounded-full border border-line px-3 py-2 text-sm font-semibold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:border-accent group-hover:text-ink hover:underline active:scale-[0.98]"
-    >
-      {t.projectsSection.detail}
-      <Icons name="arrow" class="h-4 w-4" />
-    </a>
   </div>
 </Reveal>
+
+<style>
+  .art__veil {
+    background-image: linear-gradient(180deg, rgba(10, 10, 10, 0.15) 0%, rgba(10, 10, 10, 0.72) 100%);
+  }
+</style>

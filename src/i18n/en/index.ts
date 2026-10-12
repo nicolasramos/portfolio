@@ -50,6 +50,19 @@ export default {
           "MCP server for any client",
           "Data sovereignty and predictable cost",
         ],
+        signal:
+          "The information lives inside your systems and people still copy it into a spreadsheet to be able to think.",
+        shape: "A pilot on your real data and, if it holds up, the step into production.",
+        fits: [
+          "The data is already ordered inside your systems",
+          "There are queries a person repeats by hand today",
+          "You want to know what leaves your server before it leaves",
+        ],
+        notFits: [
+          "You are after a chatbot for the website",
+          "There is no data to search yet",
+          "The only condition is paying per user per month",
+        ],
       },
       {
         key: "odoo",
@@ -60,6 +73,19 @@ export default {
           "Migrations from 14, 16 and 17",
           "Custom modules you can maintain",
           "Deploy with Doodba and Coolify",
+        ],
+        signal:
+          "Every change ends up as a patch nobody understands, or there is an old version nobody dares to touch.",
+        shape: "Fixed scope per project, or a monthly retainer when the system is alive.",
+        fits: [
+          "Odoo is your backbone, not a side module",
+          "Customisations piled up without documentation",
+          "A migration is on the table or close",
+        ],
+        notFits: [
+          "You want to switch ERP without a concrete reason",
+          "You are after installing modules without reviewing them",
+          "Nobody is going to maintain what gets built",
         ],
       },
       {
@@ -72,6 +98,19 @@ export default {
           "Scheduled jobs and alerts",
           "A trace for every run",
         ],
+        signal:
+          "Something gets done by hand every week and everyone assumes it has to be that way.",
+        shape: "One process at a time, with a metric from day one.",
+        fits: [
+          "The process is defined, even if only in someone's head",
+          "The pieces have an API or can be connected",
+          "You want to know what ran, when and with what result",
+        ],
+        notFits: [
+          "The process changes every time it runs",
+          "It is one click a day",
+          "The source data does not exist yet",
+        ],
       },
       {
         key: "eq",
@@ -83,6 +122,58 @@ export default {
           "Real handover with documentation",
           "Ongoing maintenance",
         ],
+        signal:
+          "It works, but nobody knows how it is wired up or what happens if it falls over tonight.",
+        shape: "A one-off audit with a written report, or ongoing support with a reserved slot.",
+        fits: [
+          "Technical or documentation debt has piled up",
+          "Somebody left and took the knowledge with them",
+          "Your team wants to run it alone, but with a safety net",
+        ],
+        notFits: [
+          "You want a vendor who never says no",
+          "Documentation is not in the budget",
+          "The goal is to depend on me more and more",
+        ],
+      },
+    ],
+  },
+  selector: {
+    eyebrow: "Self-check",
+    title: "Tick whatever sounds like you",
+    intro:
+      "You do not need to know what to ask for. Tick one or two sentences: what fits stays lit and the rest dims.",
+    footnote: "This happens here, in your browser. Nothing is sent or stored.",
+    options: [
+      { svc: "ia", label: "My data must not leave my server" },
+      { svc: "ia", label: "Asking my ERP should feel like asking a person" },
+      { svc: "odoo", label: "My Odoo is customised and scary to touch" },
+      { svc: "odoo", label: "I have a migration or an old version on my hands" },
+      { svc: "auto", label: "Manual work repeats itself every week" },
+      { svc: "eq", label: "Nobody knows how what already works is built" },
+    ],
+  },
+  needs: {
+    eyebrow: "Before we start",
+    title: "What I need from you",
+    intro:
+      "Nothing heavy. With this I can tell you whether I can help, where to start and what is not worth it.",
+    items: [
+      {
+        t: "Two sentences about the problem",
+        d: "What happens today, how often it happens and who feels it most.",
+      },
+      {
+        t: "Read-only access",
+        d: "A test database or a scrubbed dump. Never production credentials.",
+      },
+      {
+        t: "One reference person",
+        d: "Someone who knows where the data lives and can answer quickly.",
+      },
+      {
+        t: "Where it should end up",
+        d: "The server, the environment and who runs it once I am gone.",
       },
     ],
   },
@@ -205,7 +296,15 @@ export default {
     eyebrow: "Projects",
     title: "Open source that runs in production",
     intro:
-      "Six repositories of my own. Star and fork counts come from the GitHub API and refresh with every build.",
+      "Six repositories of my own. The numbers are the same ones you see on GitHub: I read them from its API with npm run refresh.",
+    filterTitle: "Filter by language",
+    filterAll: "All",
+    barsTitle: "How used each one is",
+    barsHint: "Real GitHub stars, untouched.",
+    issues: "open issues and PRs",
+    contributors: "contributors",
+    release: "release",
+    created: "running since",
   },
   contact: {
     eyebrow: "Contact",
@@ -262,5 +361,10 @@ export default {
     forks: "Forks",
     visit: "Open on GitHub",
     related: "Other projects",
+    openIssues: "Open issues and PRs",
+    license: "License",
+    contributors: "Contributors",
+    release: "Latest release",
+    created: "Running since",
   },
 } as const;

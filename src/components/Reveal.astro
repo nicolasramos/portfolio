@@ -1,14 +1,13 @@
 ---
-type Props = {
+type Props = astroHTML.JSX.HTMLAttributes & {
   as?: keyof HTMLElementTagNameMap;
   delay?: number;
-  class?: string;
 };
 
-const { as = "div", delay = 0, class: className } = Astro.props;
+const { as = "div", delay = 0, ...rest } = Astro.props;
 const Tag: any = as;
 ---
 
-<Tag data-reveal style={delay ? `transition-delay: ${delay}ms` : undefined} class={className}>
+<Tag {...rest} data-reveal style={delay ? `transition-delay: ${delay}ms` : rest.style}>
   <slot />
 </Tag>

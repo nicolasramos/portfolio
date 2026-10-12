@@ -50,6 +50,19 @@ export default {
           "Servidor MCP para cualquier cliente",
           "Soberanía de datos y coste predecible",
         ],
+        signal:
+          "La información vive dentro de tus sistemas y la gente sigue copiándola a un Excel para poder pensar.",
+        shape: "Prueba piloto sobre tus datos reales y, si convence, paso a producción.",
+        fits: [
+          "El dato ya está ordenado dentro de tus sistemas",
+          "Hay consultas que hoy hace una persona y se repiten",
+          "Quieres saber qué sale de tu servidor antes de que salga",
+        ],
+        notFits: [
+          "Buscas un chatbot para el sitio web",
+          "No hay datos donde buscar todavía",
+          "La única condición es pagar por usuario y mes",
+        ],
       },
       {
         key: "odoo",
@@ -60,6 +73,19 @@ export default {
           "Migraciones desde 14, 16 y 17",
           "Módulos propios mantenibles",
           "Despliegue con Doodba y Coolify",
+        ],
+        signal:
+          "Cada cambio acaba en un parche que nadie entiende, o hay una versión vieja que da miedo tocar.",
+        shape: "Alcance cerrado por proyecto, o continuidad mensual si el sistema es vivo.",
+        fits: [
+          "Odoo es tu columna vertebral, no un módulo suelto",
+          "Hay personalizaciones acumuladas sin documentar",
+          "Tienes una migración encima o se acerca",
+        ],
+        notFits: [
+          "Quieres cambiar de ERP sin un motivo concreto",
+          "Buscas instalar módulos sin revisarlos",
+          "Nadie va a mantener lo que se monte",
         ],
       },
       {
@@ -72,6 +98,19 @@ export default {
           "Tareas programadas y alertas",
           "Trazabilidad de cada ejecución",
         ],
+        signal:
+          "Hay algo que se hace a mano todas las semanas y todo el mundo asume que tiene que ser así.",
+        shape: "Un proceso por vez, con una métrica desde el primer día.",
+        fits: [
+          "El proceso está definido, aunque esté en la cabeza de uno",
+          "Las piezas tienen API o se pueden conectar",
+          "Interesa saber qué pasó, cuándo y con qué resultado",
+        ],
+        notFits: [
+          "El proceso cambia cada vez que se ejecuta",
+          "Es un clic al día y ya",
+          "El dato de origen todavía no existe",
+        ],
       },
       {
         key: "eq",
@@ -83,6 +122,58 @@ export default {
           "Documentación y traspaso real",
           "Mantenimiento evolutivo",
         ],
+        signal:
+          "Funciona, pero nadie sabe cómo está montado ni qué pasaría si esta noche se cae.",
+        shape: "Auditoría puntual con informe, o acompañamiento con hueco fijo en la agenda.",
+        fits: [
+          "Hay deuda técnica o de documentación acumulada",
+          "Alguien se fue y se llevó el conocimiento",
+          "Tu equipo quiere operar solo, pero con red",
+        ],
+        notFits: [
+          "Buscas un proveedor que nunca te diga que no",
+          "Documentar no entra en el presupuesto",
+          "El objetivo es depender cada vez más de mí",
+        ],
+      },
+    ],
+  },
+  selector: {
+    eyebrow: "Autodiagnóstico",
+    title: "Marca lo que te suena",
+    intro:
+      "No hace falta que sepas qué pedir. Marca una o dos frases: lo que encaja se queda encendido y lo demás se apaga.",
+    footnote: "Ocurre aquí, en tu navegador. No se envía ni se guarda nada.",
+    options: [
+      { svc: "ia", label: "Mis datos no pueden salir de mi servidor" },
+      { svc: "ia", label: "Consultar el ERP debería ser como preguntarle a alguien" },
+      { svc: "odoo", label: "Mi Odoo está personalizado y da miedo tocarlo" },
+      { svc: "odoo", label: "Tengo una migración o una versión vieja encima" },
+      { svc: "auto", label: "Hay trabajo manual que se repite cada semana" },
+      { svc: "eq", label: "Nadie sabe cómo está montado lo que ya funciona" },
+    ],
+  },
+  needs: {
+    eyebrow: "Antes de empezar",
+    title: "Qué necesito de ti",
+    intro:
+      "Nada complicado. Con esto ya puedo decirte si puedo ayudarte, por dónde se empieza y qué no lo es.",
+    items: [
+      {
+        t: "Dos frases del problema",
+        d: "Qué pasa hoy, cada cuánto pasa y a quién le duele más.",
+      },
+      {
+        t: "Acceso de lectura",
+        d: "Una base de pruebas o un volco sin datos personales. Nunca credenciales de producción.",
+      },
+      {
+        t: "Una persona de referencia",
+        d: "Alguien que sepa dónde está el dato y pueda responder rápido.",
+      },
+      {
+        t: "Dónde debe acabar",
+        d: "El servidor, el entorno y quién lo administra cuando yo no esté.",
       },
     ],
   },
@@ -205,7 +296,15 @@ export default {
     eyebrow: "Proyectos",
     title: "Open source que se usa en producción",
     intro:
-      "Seis repositorios propios. Las cifras de estrellas y forks vienen de la API de GitHub y se actualizan con cada build.",
+      "Seis repositorios propios. Las cifras son las mismas que ves en GitHub: las leo de su API con npm run refresh.",
+    filterTitle: "Filtrar por lenguaje",
+    filterAll: "Todos",
+    barsTitle: "Así de usado está cada uno",
+    barsHint: "Estrellas reales de GitHub, sin retocar.",
+    issues: "issues y PRs abiertos",
+    contributors: "colaboradores",
+    release: "versión",
+    created: "en marcha desde",
   },
   contact: {
     eyebrow: "Contacto",
@@ -262,5 +361,10 @@ export default {
     forks: "Forks",
     visit: "Abrir en GitHub",
     related: "Otros proyectos",
+    openIssues: "Issues y PRs abiertos",
+    license: "Licencia",
+    contributors: "Colaboradores",
+    release: "Última versión",
+    created: "En marcha desde",
   },
 } as const;

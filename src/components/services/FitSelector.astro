@@ -1,0 +1,66 @@
+---
+import type { Locale } from "../../data/site";
+
+type Props = { locale: Locale; t: Record<string, any> };
+const { locale, t } = Astro.props;
+const options: { svc: string; label: string }[] = t.selector.options;
+
+/**
+ * The whole behaviour is CSS: a checked chip keeps its own service sheet lit and
+ * everything else fades. Rules are generated from the copy so the chip -> service
+ * mapping lives in one place. No JavaScript ships for this to work.
+ */
+const lit = options
+  .map((o, i) => `.sheets:has(#fit-${i}:checked) .sheet[data-svc="${o.svc}"]`)
+  .join(",\n");
+const litBorder = options
+  .map((o, i) => `.sheets:has(#fit-${i}:checked) .sheet[data-svc="${o.svc}"]`)
+  .join(",\n");
+const rules = `.sheets:has(.fit__input:checked) .sheet{opacity:.32}
+${lit}{opacity:1}
+${litBorder}{border-color:var(--color-line-strong)}`;
+---
+
+<style is:inline set:html={rules} />
+
+<div class="fit mt-10 rounded-2xl border border-line bg-panel p-6 md:p-8">
+  <p class="label-mono">{t.selector.eyebrow}</p>
+  <h2 class="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">{t.selector.title}</h2>
+  <p class="mt-4 max-w-[680px] text-lg text-muted">{t.selector.intro}</p>
+
+  <fieldset class="mt-6 border-0 p-0">
+    <legend class="sr-only">{t.selector.title}</legend>
+    <div class="flex flex-wrap gap-x-2 gap-y-3">
+      {
+        options.map((option, index) => (
+          <span class="contents">
+            <input
+              type="checkbox"
+              id={`fit-${index}`}
+              class="fit__input peer sr-only"
+              data-svc={option.svc}
+              aria-describedby="fit-note"
+            />
+            <label
+              for={`fit-${index}`}
+              class="cursor-pointer select-none rounded-full border border-line bg-night px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] peer-checked:border-accent peer-checked:bg-accent peer-checked:text-black peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent hover:border-line-strong hover:text-ink"
+            >
+              {option.label}
+            </label>
+          </span>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <p id="fit-note" class="mt-5 font-mono text-xs uppercase tracking-widest text-muted">
+    {t.selector.footnote}
+  </p>
+</div>
+
+<style>
+  .fit label {
+    /* Chips read as controls, not text: a hairline that closes on hover. */
+    line-height: 1.4;
+  }
+</style>

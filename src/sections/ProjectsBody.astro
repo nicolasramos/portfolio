@@ -1,7 +1,7 @@
 ---
 import type { Locale } from "../data/site";
 import { contact } from "../data/site";
-import projects, { totals } from "../data/projects";
+import projects, { totals, languages } from "../data/projects";
 import Section from "../components/Section.astro";
 import Reveal from "../components/Reveal.astro";
 import ProjectCard from "../components/ProjectCard.astro";
@@ -9,7 +9,25 @@ import Icons from "../components/Icons.astro";
 
 type Props = { locale: Locale; t: Record<string, any> };
 const { locale, t } = Astro.props;
+
+const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+const maxStars = Math.max(...projects.map((project) => project.stars));
+const countFor = (language: string) =>
+  projects.filter((project) => project.language === language).length;
+
+/**
+ * The language filter is CSS only: real radios plus :has(), so filtering works
+ * with no JavaScript and the page is still complete when printed.
+ */
+const rules = languages
+  .map(
+    (language) =>
+      `.repos:has(#lang-${slug(language)}:checked) .repo:not([data-lang="${language}"]){display:none}`
+  )
+  .join("\n");
 ---
+
+<style is:inline set:html={rules} />
 
 <Section eyebrow={t.projectsPage.eyebrow} title={t.projectsPage.title} intro={t.projectsPage.intro} class="pt-8" level={1}>
   <Reveal class="mt-8 flex flex-wrap gap-6 border-y border-line py-6 font-mono text-xs uppercase tracking-widest text-muted">
@@ -18,10 +36,62 @@ const { locale, t } = Astro.props;
     <span class="inline-flex items-center gap-2"><Icons name="code" class="h-4 w-4" />{totals.repos} {locale === "es" ? "repositorios propios" : "own repositories"}</span>
   </Reveal>
 
-  <div class="mt-8 grid gap-3 md:grid-cols-2">
-    {projects.map((project, index) => (
-      <ProjectCard project={project} locale={locale} t={t} delay={index * 60} />
-    ))}
+  <div class="repos">
+    <Reveal class="mt-8 grid gap-8 rounded-2xl border border-line bg-panel p-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:p-8">
+      <fieldset class="border-0 p-0">
+        <legend class="label-mono">{t.projectsPage.filterTitle}</legend>
+        <div class="mt-4 flex flex-wrap gap-x-2 gap-y-3">
+          <input type="radio" name="lang" id="lang-all" class="peer sr-only" checked />
+          <label for="lang-all" class="cursor-pointer select-none rounded-full border border-line bg-night px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] peer-checked:border-accent peer-checked:bg-accent peer-checked:text-black peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent hover:border-line-strong hover:text-ink">
+            {t.projectsPage.filterAll} {totals.repos}
+          </label>
+          {
+            languages.map((language) => (
+              <>
+                <input type="radio" name="lang" id={`lang-${slug(language)}`} class="peer sr-only" />
+                <label
+                  for={`lang-${slug(language)}`}
+                  class="cursor-pointer select-none rounded-full border border-line bg-night px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] peer-checked:border-accent peer-checked:bg-accent peer-checked:text-black peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent hover:border-line-strong hover:text-ink"
+                >
+                  {language} {countFor(language)}
+                </label>
+              </>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <div>
+        <p class="label-mono">{t.projectsPage.barsTitle}</p>
+        <ul class="mt-4 space-y-2">
+          {
+            projects.map((project) => (
+              <li class="flex items-center gap-3">
+                <span class="w-24 shrink-0 truncate font-mono text-xs text-muted sm:w-32">
+                  {project.name}
+                </span>
+                <span class="h-2 flex-1 overflow-hidden rounded-full border border-line bg-night">
+                  <span
+                    class="block h-full rounded-full bg-accent"
+                    style={`width:${Math.max(3, Math.round((project.stars / maxStars) * 100))}%`}
+                  ></span>
+                </span>
+                <span class="w-10 shrink-0 text-right font-mono text-xs text-ink">
+                  {project.stars}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-4 font-mono text-xs uppercase tracking-widest text-muted">
+          {t.projectsPage.barsHint}
+        </p>
+      </div>
+    </Reveal>
+
+    <div class="mt-6 grid gap-3 md:grid-cols-2">
+      {projects.map((project, index) => <ProjectCard project={project} locale={locale} t={t} delay={index * 60} />)}
+    </div>
   </div>
 
   <Reveal class="mt-8">

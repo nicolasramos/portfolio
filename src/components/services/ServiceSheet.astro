@@ -1,0 +1,125 @@
+---
+import type { Locale } from "../../data/site";
+import Icons from "../Icons.astro";
+
+type Props = {
+  locale: Locale;
+  item: {
+    key: string;
+    title: string;
+    body: string;
+    points: string[];
+    signal: string;
+    shape: string;
+    fits: string[];
+    notFits: string[];
+  };
+  index: number;
+};
+
+const { locale, item, index } = Astro.props;
+const L =
+  locale === "es"
+    ? {
+        signal: "Lo que suele estar pasando",
+        deliverables: "Qué te llevas",
+        fits: "Encaja si",
+        notFits: "No encaja si",
+      }
+    : {
+        signal: "What is usually going on",
+        deliverables: "What you get",
+        fits: "Fits if",
+        notFits: "Does not fit if",
+      };
+---
+
+<article
+  id={item.key}
+  data-svc={item.key}
+  class="sheet relative overflow-hidden rounded-2xl border border-line bg-panel p-6 transition-[border-color,opacity] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-line-strong md:p-8"
+>
+  <span class="sheet__hatch" aria-hidden="true"></span>
+  <div class="relative grid gap-8 md:grid-cols-[1.1fr_1fr]">
+    <div>
+      <p class="label-mono">{String(index + 1).padStart(2, "0")}</p>
+      <h2 class="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">{item.title}</h2>
+      <p class="mt-4 max-w-[680px] text-lg text-muted">{item.body}</p>
+      <div class="mt-7 border-l-2 border-line-strong pl-5">
+        <p class="label-mono">{L.signal}</p>
+        <p class="mt-3 text-base text-ink">{item.signal}</p>
+      </div>
+    </div>
+
+    <div class="space-y-7 border-t border-line pt-6 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+      <div>
+        <p class="label-mono">{L.deliverables}</p>
+        <ul class="mt-3 space-y-2">
+          {
+            item.points.map((point) => (
+              <li class="flex items-start gap-3 text-sm text-muted">
+                <Icons name="check" class="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                <span>{point}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+        <div>
+          <p class="label-mono">{L.fits}</p>
+          <ul class="mt-3 space-y-2">
+            {
+              item.fits.map((line) => (
+                <li class="flex items-start gap-2 text-sm text-ink">
+                  <span class="font-mono text-accent" aria-hidden="true">
+                    +
+                  </span>
+                  <span>{line}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div>
+          <p class="label-mono">{L.notFits}</p>
+          <ul class="mt-3 space-y-2">
+            {
+              item.notFits.map((line) => (
+                <li class="flex items-start gap-2 text-sm text-muted">
+                  <span class="font-mono" aria-hidden="true">
+                    &minus;
+                  </span>
+                  <span>{line}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <p class="border-t border-line pt-4 font-mono text-xs uppercase tracking-widest text-muted">
+        <span class="text-accent" aria-hidden="true">&middot;</span> {item.shape}
+      </p>
+    </div>
+  </div>
+</article>
+
+<style>
+  .sheet__hatch {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 700ms var(--ease-fluid);
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05) 0 1px,
+      transparent 1px 9px
+    );
+  }
+
+  .sheet:hover .sheet__hatch {
+    opacity: 1;
+  }
+</style>
