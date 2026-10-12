@@ -1,0 +1,48 @@
+---
+import type { Project } from "../data/projects";
+import type { Locale } from "../data/site";
+import paths from "../data/site";
+import Icons from "./Icons.astro";
+import Reveal from "./Reveal.astro";
+
+type Props = {
+  project: Project;
+  locale: Locale;
+  t: Record<string, any>;
+  delay?: number;
+};
+
+const { project, locale, t, delay = 0 } = Astro.props;
+const href = paths[locale].project(project.slug);
+---
+
+<Reveal
+  delay={delay}
+  class="group flex h-full flex-col justify-between rounded-2xl border border-line bg-panel p-6 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-2 hover:border-line-strong"
+>
+  <div>
+    <div class="flex items-start justify-between gap-4">
+      <h3 class="text-xl font-semibold tracking-tight">{project.name}</h3>
+      <span class="font-mono text-xs text-muted">{project.language}</span>
+    </div>
+    <p class="mt-3 text-base text-muted">{project.tagline[locale]}</p>
+  </div>
+
+  <div class="mt-6 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-4 font-mono text-xs text-muted">
+      <span class="inline-flex items-center gap-2">
+        <Icons name="star" class="h-4 w-4 text-accent" />{project.stars}
+      </span>
+      <span class="inline-flex items-center gap-2">
+        <Icons name="fork" class="h-4 w-4" />{project.forks}
+      </span>
+    </div>
+    <a
+      href={href}
+      class="inline-flex items-center gap-2 rounded-full border border-line px-3 py-2 text-sm font-semibold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:border-accent group-hover:text-accent active:scale-[0.98]"
+    >
+      {t.projectsSection.detail}
+      <Icons name="arrow" class="h-4 w-4" />
+    </a>
+  </div>
+</Reveal>

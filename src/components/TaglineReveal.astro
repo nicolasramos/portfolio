@@ -1,0 +1,16 @@
+---
+type Props = {
+  text: string;
+};
+
+const { text } = Astro.props;
+const words = text.split(" ");
+---
+
+<section class="bg-warm py-20 sm:py-24">
+  <div class="mx-auto max-w-[680px] px-6">
+    <p class="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+      {words.map((word) => <span data-word class="inline-block">{word}&nbsp;</span>)}
+    </p>
+  </div>
+</section>

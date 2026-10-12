@@ -1,0 +1,70 @@
+---
+import type { Locale } from "../data/site";
+import { contact } from "../data/site";
+import paths from "../data/site";
+import Icons from "./Icons.astro";
+
+type Props = {
+  locale: Locale;
+  t: Record<string, any>;
+};
+
+const { locale, t } = Astro.props;
+const p = paths[locale];
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-line bg-panel">
+  <div class="mx-auto grid max-w-6xl gap-8 px-6 py-16 md:grid-cols-4">
+    <div class="md:col-span-2">
+      <a href={p.home} class="font-mono text-2xl font-semibold tracking-tight">NR</a>
+      <p class="mt-4 max-w-md text-base text-muted">{t.footer.tagline}</p>
+      <div class="mt-6 flex items-center gap-3">
+        <a
+          href={contact.github}
+          rel="me noopener"
+          class="rounded-full border border-line p-3 text-muted transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-line-strong hover:text-ink"
+          ><span class="sr-only">{t.footer.github}</span><Icons name="github" /></a
+        >
+        <a
+          href={contact.linkedin}
+          rel="me noopener"
+          class="rounded-full border border-line p-3 text-muted transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-line-strong hover:text-ink"
+          ><span class="sr-only">{t.footer.linkedin}</span><Icons name="linkedin" /></a
+        >
+        <a
+          href={`mailto:${contact.email}`}
+          class="rounded-full border border-line p-3 text-muted transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-line-strong hover:text-ink"
+          ><span class="sr-only">{t.contact.emailLabel}</span><Icons name="mail" /></a
+        >
+      </div>
+    </div>
+
+    <nav aria-label={t.footer.menu}>
+      <h2 class="label-mono">{t.footer.menu}</h2>
+      <ul class="mt-4 space-y-3 text-base">
+        <li><a class="hover:text-accent" href={p.services}>{t.nav.services}</a></li>
+        <li><a class="hover:text-accent" href={p.projects}>{t.nav.projects}</a></li>
+        <li><a class="hover:text-accent" href={p.about}>{t.nav.about}</a></li>
+        <li><a class="hover:text-accent" href={p.contact}>{t.nav.contact}</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-label={t.footer.more}>
+      <h2 class="label-mono">{t.footer.more}</h2>
+      <ul class="mt-4 space-y-3 text-base">
+        <li><a class="hover:text-accent" href={contact.blog} rel="noopener">{t.footer.blog}</a></li>
+        <li><a class="hover:text-accent" href={contact.legal.privacy} rel="noopener">{t.footer.privacy}</a></li>
+        <li><a class="hover:text-accent" href={contact.legal.cookies} rel="noopener">{t.footer.cookies}</a></li>
+        <li><a class="hover:text-accent" href={contact.legal.notice} rel="noopener">{t.footer.legal}</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="border-t border-line">
+    <div class="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-6 font-mono text-xs uppercase tracking-widest text-muted md:flex-row md:items-center md:justify-between">
+      <p>© {year} Nicolás Ramos. {t.footer.rights}</p>
+      <p>{t.footer.built}</p>
+    </div>
+  </div>
+</footer>

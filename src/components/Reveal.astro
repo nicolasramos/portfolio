@@ -1,0 +1,14 @@
+---
+type Props = {
+  as?: keyof HTMLElementTagNameMap;
+  delay?: number;
+  class?: string;
+};
+
+const { as = "div", delay = 0, class: className } = Astro.props;
+const Tag: any = as;
+---
+
+<Tag data-reveal style={delay ? `transition-delay: ${delay}ms` : undefined} class={className}>
+  <slot />
+</Tag>

@@ -1,0 +1,166 @@
+---
+import "../styles/global.css";
+import type { Locale } from "../data/site";
+import { alternatePaths } from "../data/site";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+type Props = {
+  locale: Locale;
+  t: Record<string, any>;
+  title: string;
+  description: string;
+  current?: string;
+  ogImage?: string;
+  noindex?: boolean;
+};
+
+const {
+  locale,
+  t,
+  title,
+  description,
+  current = "home",
+  ogImage = "/og-image.png",
+  noindex = false,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage, Astro.site);
+const alts = alternatePaths(Astro.url.pathname);
+const analyticsDomain = import.meta.env.PUBLIC_ANALYTICS_DOMAIN ?? "";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Nicolás Ramos",
+  url: canonicalURL.href,
+  email: "contacto@nicolasramos.es",
+  jobTitle: ["Odoo Expert", "AI Engineer", "Automation"],
+  address: { "@type": "PostalAddress", addressRegion: "Canary Islands", addressCountry: "ES" },
+  sameAs: [
+    "https://github.com/nicolasramos",
+    "https://www.linkedin.com/in/nramosdev/",
+    "https://nramos.dev/",
+  ],
+};
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    {alts.es && <link rel="alternate" hreflang="es" href={new URL(alts.es, Astro.site)} />}
+    {alts.en && <link rel="alternate" hreflang="en" href={new URL(alts.en, Astro.site)} />}
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:locale" content={t.meta.locale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    {
+      analyticsDomain && (
+        <script defer data-domain={analyticsDomain} src={`https://${analyticsDomain}/js/script.js`}></script>
+      )
+    }
+  </head>
+
+  <body class="min-h-screen bg-base text-ink antialiased">
+    <a
+      href="#contenido"
+      class="sr-only rounded-lg focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
+    >
+      {t.skip}
+    </a>
+
+    <Header locale={locale} t={t} current={current as any} />
+
+    <main id="contenido" class="pt-24">
+      <slot />
+    </main>
+
+    <Footer locale={locale} t={t} />
+
+    <script>
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const revealables = document.querySelectorAll<HTMLElement>("[data-reveal]");
+      const words = document.querySelectorAll<HTMLElement>("[data-word]");
+
+      if (reduce || !("IntersectionObserver" in window)) {
+        revealables.forEach((el) => el.classList.add("is-in"));
+        words.forEach((el) => el.classList.add("is-in"));
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting || entry.boundingClientRect.bottom < 0) {
+                entry.target.classList.add("is-in");
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: "0px 0px -10% 0px", threshold: 0 }
+        );
+        revealables.forEach((el) => observer.observe(el));
+
+        const wordObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting || entry.boundingClientRect.bottom < 0) {
+                entry.target.classList.add("is-in");
+                wordObserver.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: "0px 0px -18% 0px", threshold: 0 }
+        );
+        words.forEach((el, index) => {
+          el.style.transitionDelay = `${Math.min(index * 45, 900)}ms`;
+          wordObserver.observe(el);
+        });
+
+        // Fast flicks can skip IntersectionObserver callbacks entirely: an element
+        // that jumps from below the viewport to above it never changes state. A
+        // rAF throttled sweep marks whatever has already been scrolled past.
+        let ticking = false;
+        const sweep = () => {
+          for (const el of document.querySelectorAll("[data-reveal]:not(.is-in), [data-word]:not(.is-in)")) {
+            if (el.getBoundingClientRect().bottom < 0) el.classList.add("is-in");
+          }
+        };
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+              sweep();
+              ticking = false;
+            });
+          },
+          { passive: true }
+        );
+      }
+    </script>
+  </body>
+</html>

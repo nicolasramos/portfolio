@@ -1,0 +1,40 @@
+---
+import projects from "../data/projects";
+import Icons from "./Icons.astro";
+import Reveal from "./Reveal.astro";
+
+type Props = {
+  labels: { stars: string; forks: string; language: string };
+};
+
+const { labels } = Astro.props;
+const top = [...projects].sort((a, b) => b.stars - a.stars).slice(0, 4);
+---
+
+<Reveal delay={150} class="rounded-2xl border border-line bg-panel p-3 shadow-2xl shadow-black">
+  <div class="flex items-center gap-2 border-b border-line px-3 py-3">
+    <span class="h-3 w-3 rounded-full bg-line-strong"></span>
+    <span class="h-3 w-3 rounded-full bg-line-strong"></span>
+    <span class="h-3 w-3 rounded-full bg-accent-dim"></span>
+    <span class="ml-3 font-mono text-xs uppercase tracking-widest text-muted">odooclaw mcp</span>
+  </div>
+
+  <div class="space-y-3 px-4 py-6 font-mono text-sm leading-relaxed">
+    <p class="text-muted"><span class="text-accent">$</span> odooclaw status</p>
+    <p class="text-ink">kernel rlm · odoo 18 · 129 tools</p>
+    <p class="text-muted">models: local, no cloud calls</p>
+    <div class="mt-6 space-y-3 border-t border-line pt-6">
+      {
+        top.map((p) => (
+          <p class="flex items-center justify-between gap-4">
+            <span class="truncate text-ink">{p.repo.replace("nicolasramos/", "")}</span>
+            <span class="flex shrink-0 items-center gap-3 text-muted">
+              <span class="inline-flex items-center gap-1"><Icons name="star" class="h-4 w-4 text-accent" />{p.stars}</span>
+              <span class="inline-flex items-center gap-1"><Icons name="fork" class="h-4 w-4" />{p.forks}</span>
+            </span>
+          </p>
+        ))
+      }
+    </div>
+  </div>
+</Reveal>

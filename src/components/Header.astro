@@ -1,0 +1,167 @@
+---
+import type { Locale, PathMapKey } from "../data/site";
+import { contact, alternatePaths } from "../data/site";
+import paths from "../data/site";
+import Icons from "./Icons.astro";
+
+type Props = {
+  locale: Locale;
+  t: Record<string, any>;
+  current: PathMapKey | "other";
+};
+
+const { locale, t, current } = Astro.props;
+const p = paths[locale];
+const other = locale === "es" ? "en" : "es";
+const alts = alternatePaths(Astro.url.pathname);
+const otherHref = (other === "en" ? alts.en : alts.es) ?? paths[other].home;
+
+const items = [
+  { key: "services", label: t.nav.services, href: p.services },
+  { key: "projects", label: t.nav.projects, href: p.projects },
+  { key: "about", label: t.nav.about, href: p.about },
+];
+---
+
+<header class="fixed inset-x-0 top-0 z-50 px-4">
+  <nav
+    aria-label={t.nav.home}
+    class="nav-shell mx-auto mt-6 flex w-max max-w-full items-center gap-3 rounded-full border border-line bg-black/60 px-3 py-2 backdrop-blur-xl"
+  >
+    <a href={p.home} class="flex items-center gap-2 pl-1 text-ink">
+      <span class="font-mono text-base font-semibold tracking-tight">NR</span>
+    </a>
+
+    <ul class="hidden items-center gap-3 md:flex">
+      {
+        items.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={current === item.key ? "page" : undefined}
+              class:list={[
+                "rounded-full px-3 py-2 text-sm font-medium hover:text-accent",
+                current === item.key ? "text-accent" : "text-muted",
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={otherHref}
+        hreflang={other}
+        class="hidden rounded-full border border-line px-3 py-2 font-mono text-xs uppercase tracking-widest text-muted hover:border-line-strong hover:text-ink md:inline-block"
+      >
+        {t.nav.other}
+      </a>
+      <a
+        href={p.contact}
+        class="hidden rounded-full bg-accent px-3 py-2 text-sm font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-ink active:scale-[0.98] md:inline-block"
+      >
+        {t.hero.primary}
+      </a>
+      <button
+        type="button"
+        data-nav-toggle
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        class="nav-burger relative h-6 w-6 text-ink md:hidden"
+      >
+        <span class="sr-only">{t.nav.menu ?? "Menú"}</span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div
+    id="mobile-nav"
+    data-nav-panel
+    class="nav-panel fixed inset-0 top-0 z-40 hidden bg-black/80 backdrop-blur-3xl md:hidden"
+    hidden
+  >
+    <ul class="flex h-full flex-col justify-center gap-4 px-6 pb-24">
+      {
+        [...items, { key: "contact", label: t.nav.contact, href: p.contact }].map(
+          (item, index) => (
+            <li>
+              <a
+                href={item.href}
+                data-navlink
+                style={`transition-delay: ${100 + index * 50}ms`}
+                aria-current={current === item.key ? "page" : undefined}
+                class:list={[
+                  "block text-4xl font-semibold tracking-tight hover:text-accent",
+                  current === item.key ? "text-accent" : "text-ink",
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
+          )
+        )
+      }
+      <li>
+        <a
+          href={otherHref}
+          hreflang={other}
+          data-navlink
+          style="transition-delay: 300ms"
+          class="block font-mono text-sm uppercase tracking-widest text-muted hover:text-ink"
+        >
+          {t.nav.other}
+        </a>
+      </li>
+      <li>
+        <a
+          href={contact.github}
+          data-navlink
+          style="transition-delay: 350ms"
+          class="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-muted hover:text-ink"
+        >
+          <Icons name="github" class="h-4 w-4" /> {t.footer.github}
+        </a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>("[data-nav-toggle]");
+  const panel = document.querySelector<HTMLElement>("[data-nav-panel]");
+
+  if (toggle && panel) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      panel.classList.toggle("is-open", open);
+      panel.hidden = !open;
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) {
+        const first = panel.querySelector<HTMLElement>("[data-navlink]");
+        first?.focus();
+      } else {
+        toggle.focus();
+      }
+    };
+
+    toggle.addEventListener("click", () => {
+      setOpen(toggle.getAttribute("aria-expanded") !== "true");
+    });
+
+    panel.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      if (target.closest("a")) setOpen(false);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+        setOpen(false);
+      }
+    });
+  }
+</script>
