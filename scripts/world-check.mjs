@@ -52,6 +52,10 @@ console.log("desktop 1440x900");
   const vh = 900;
   const DIVE = 1.35; // must match diveScroll in ScrollWorld.astro
 
+  const finaleMark = await page.evaluate(() => !!document.querySelector(".sw-scene:last-child .sw-finale-mark"));
+  if (!finaleMark) note("finale logo overlay missing (the logo must never live inside the video)");
+  else console.log("  finale logo is a DOM overlay, not video pixels");
+
   for (let i = 0; i < STOPS.length; i++) {
     const frac = i === 0 ? 0.05 : i === STOPS.length - 1 ? 0.8 : 0.5;
     const y = ((i + frac) * DIVE * vh) | 0;

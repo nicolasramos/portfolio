@@ -55,6 +55,18 @@ const config = {
     if (!node || !mount || typeof window.mountScrollWorld !== "function") return;
     try {
       window.mountScrollWorld(mount, JSON.parse(node.textContent));
+      // The end card keeps its logo as a crisp overlay: baked into the frame the
+      // video model warped the mark into nonsense lettering.
+      const scenes = mount.querySelectorAll(".sw-scene");
+      const last = scenes[scenes.length - 1];
+      if (last) {
+        const mark = document.createElement("img");
+        mark.src = "/brand/nr_mark_lg.webp";
+        mark.className = "sw-finale-mark";
+        mark.alt = "Nicolás Ramos";
+        mark.decoding = "async";
+        last.appendChild(mark);
+      }
     } catch (err) {
       console.error("scroll world failed to mount", err);
     }
@@ -156,10 +168,56 @@ const config = {
   .sw-root .sw-nav__item:hover {
     background: rgba(255, 255, 255, 0.12);
   }
+  /* The engine paints the active nav pill `color:#fff; background:var(--sw-accent)`,
+     which on a white accent is white on white. */
+  .sw-root .sw-nav__item.is-active {
+    background: #f4f3f1;
+    color: #0a0a0a;
+  }
   .sw-root .sw-topcta {
     font-family: var(--sw-font-mono);
     letter-spacing: 0.02em;
   }
+
+  /* The engine was written for a light page: it paints buttons as
+     `background: var(--sw-ink); color: #fff`, which on a dark theme is white on
+     white. Invert them - paper button, ink text. */
+  .sw-root .sw-topcta,
+  .sw-root .sw-btn--primary {
+    background: #f4f3f1;
+    color: #0a0a0a;
+  }
+  .sw-root .sw-topcta:hover,
+  .sw-root .sw-btn--primary:hover {
+    background: #ffffff;
+  }
+  .sw-root .sw-btn--ghost {
+    color: #f4f3f1;
+    background: rgba(10, 10, 10, 0.55);
+    border-color: rgba(244, 243, 241, 0.55);
+    backdrop-filter: blur(4px);
+  }
+
+  /* The end card: the mark is a real overlay, never pixels inside the video,
+     because the video model warps lettering into gibberish ("([nr])" came back
+     reading like "cinely"). */
+  .sw-finale-mark {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: min(26vw, 300px);
+    transform: translate(-50%, -50%);
+    opacity: 0.94;
+    filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.7));
+    pointer-events: none;
+  }
+  @media (max-width: 860px) {
+    .sw-finale-mark {
+      top: 34%;
+      width: min(52vw, 260px);
+    }
+  }
+
   .sw-root .sw-copy__num {
     font-family: var(--sw-font-mono);
   }

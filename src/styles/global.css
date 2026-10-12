@@ -7,8 +7,11 @@
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 
   /* Dark surfaces restricted to the approved palette */
-  /* Strict monochrome: no hue anywhere. Accent is paper white, dim accent is grey. */
-  --color-base: #000000;
+  /* Strict monochrome: no hue anywhere. Accent is paper white, dim accent is grey.
+     The darkest surface is called `night`, never `base`: Tailwind v4 would compile
+     `text-base` to `color: var(--color-base)` and every body-text element would
+     silently turn black on black. */
+  --color-night: #000000;
   --color-panel: #141414;
   --color-raised: #1c1c1c;
   --color-warm: #101010;
@@ -30,7 +33,7 @@
   }
 
   body {
-    background-color: var(--color-base);
+    background-color: var(--color-night);
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv01";
