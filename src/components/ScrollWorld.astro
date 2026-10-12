@@ -1,0 +1,192 @@
+---
+import type { Locale } from "../data/site";
+import { worldChrome, worldStops } from "../data/world";
+
+type Props = { locale: Locale };
+const { locale } = Astro.props;
+const stops = worldStops(locale);
+const chrome = worldChrome(locale);
+const config = {
+  brand: chrome.brand,
+  cta: chrome.cta,
+  hint: chrome.hint,
+  diveScroll: 1.35,
+  sections: stops,
+};
+---
+
+<div class="world-shell">
+  <!-- The engine paints the film here (decorative). The same words exist as real
+       text below so crawlers and screen readers get the page, not a canvas. -->
+  <div id="world" aria-hidden="true"></div>
+
+  <div class="sr-only">
+    <h1>
+      {locale === "es"
+        ? "Nicolás Ramos — Odoo, agentes de IA y automatización"
+        : "Nicolás Ramos — Odoo, AI agents and automation"}
+    </h1>
+    <p>{chrome.aria}</p>
+    {
+      stops.map((s) => (
+        <section>
+          <h2>{s.title}</h2>
+          <p>{s.body}</p>
+          {s.tags.length > 0 && <p>{s.tags.join(" · ")}</p>}
+          {s.cta && (
+            <p>
+              <a href={s.cta.primary.href}>{s.cta.primary.label}</a>
+              {" · "}
+              <a href={s.cta.secondary.href}>{s.cta.secondary.label}</a>
+            </p>
+          )}
+        </section>
+      ))
+    }
+  </div>
+</div>
+
+<script type="application/json" id="world-config" set:html={JSON.stringify(config)} />
+<script is:inline src="/world/scrub-engine.js"></script>
+<script is:inline>
+  (() => {
+    const node = document.getElementById("world-config");
+    const mount = document.getElementById("world");
+    if (!node || !mount || typeof window.mountScrollWorld !== "function") return;
+    try {
+      window.mountScrollWorld(mount, JSON.parse(node.textContent));
+    } catch (err) {
+      console.error("scroll world failed to mount", err);
+    }
+  })();
+</script>
+
+<style is:global>
+  /* Monochrome brand: pure black, paper white, grey in between. The engine ships
+     its own defaults in `:root, .sw-root`, so the tokens are redeclared with one
+     extra class of specificity (`html:root`, `.sw-root.sw-root`) to win regardless
+     of order — including on html/body before the world mounts. */
+  html:root,
+  .sw-root.sw-root {
+    --sw-bg: #0a0a0a;
+    --sw-ink: #f4f3f1;
+    --sw-ink-soft: #8f8f8b;
+    --sw-accent: #ffffff;
+    --sw-font-display: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+    --sw-font-body: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+    --sw-font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  }
+
+  /* The brand is strictly black and white, and the video model drifts slightly in
+     hue between clips, so the stage is forced to true monochrome in the compositor. */
+  .sw-root .sw-scene__video,
+  .sw-root .sw-scene__still {
+    filter: grayscale(1) contrast(1.04) brightness(0.96);
+  }
+
+  /* The copy sits on the left third: give it a real plate so white text never
+     competes with a bright frame (the agents scene has glowing screens). */
+  @media (min-width: 861px) {
+    .sw-root .sw-copylayer::before {
+      width: min(66vw, 900px);
+      background: linear-gradient(
+        90deg,
+        rgba(10, 10, 10, 0.96) 0%,
+        rgba(10, 10, 10, 0.86) 30%,
+        rgba(10, 10, 10, 0.55) 58%,
+        rgba(10, 10, 10, 0) 100%
+      );
+    }
+  }
+
+  /* Phones: the engine anchors the copy to the bottom, so the plate comes from below. */
+  @media (max-width: 860px) {
+    .sw-root .sw-copylayer::before {
+      width: 100%;
+      height: 72%;
+      top: auto;
+      bottom: 0;
+      background: linear-gradient(
+        0deg,
+        rgba(10, 10, 10, 0.97) 12%,
+        rgba(10, 10, 10, 0.82) 44%,
+        rgba(10, 10, 10, 0) 100%
+      );
+    }
+    .sw-root .sw-route {
+      right: 2px;
+      opacity: 0.8;
+    }
+  }
+
+  .sw-root .sw-sky__grad {
+    background: linear-gradient(178deg, #131313 0%, #0a0a0a 55%, #060606 100%);
+  }
+  .sw-root .sw-sky__glow {
+    background: radial-gradient(62% 44% at 74% 14%, rgba(255, 255, 255, 0.09), transparent 70%),
+      radial-gradient(46% 34% at 50% 50%, rgba(255, 255, 255, 0.05), transparent 70%);
+  }
+  .sw-root .sw-brand__mark {
+    width: 40px;
+    height: 20px;
+    border-radius: 0;
+    background: url("/brand/nr_mark.webp") center / contain no-repeat;
+    box-shadow: none;
+  }
+  .sw-root .sw-brand__name {
+    font-family: var(--sw-font-mono);
+    font-weight: 500;
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+  }
+  .sw-root .sw-nav {
+    gap: 2px;
+    padding: 5px;
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(10px);
+  }
+  .sw-root .sw-nav__item {
+    color: #f4f3f1;
+    font-family: var(--sw-font-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.02em;
+  }
+  .sw-root .sw-nav__item:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .sw-root .sw-topcta {
+    font-family: var(--sw-font-mono);
+    letter-spacing: 0.02em;
+  }
+  .sw-root .sw-copy__num {
+    font-family: var(--sw-font-mono);
+  }
+  .sw-root .sw-copy__eyebrow {
+    font-family: var(--sw-font-mono);
+    letter-spacing: 0.18em;
+    color: var(--sw-ink-soft);
+  }
+  .sw-root .sw-copy__title {
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .sw-root .sw-copy__tags li {
+    font-family: var(--sw-font-mono);
+    font-size: 0.76rem;
+    color: #0a0a0a;
+    background: rgba(244, 243, 241, 0.9);
+    border-color: transparent;
+  }
+  .sw-root .sw-route__label {
+    color: #0a0a0a;
+    background: rgba(244, 243, 241, 0.9);
+    border-color: transparent;
+    font-family: var(--sw-font-mono);
+  }
+  .sw-root .sw-hint {
+    font-family: var(--sw-font-mono);
+    letter-spacing: 0.18em;
+  }
+</style>
