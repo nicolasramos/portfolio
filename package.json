@@ -1,0 +1,28 @@
+{
+  "name": "nicolasramos-web",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro build",
+    "preview:lan": "astro preview --host 0.0.0.0 --port 4321",
+    "verify": "node scripts/verify.mjs",
+    "audit": "node scripts/audit.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.1.1",
+    "@fontsource-variable/manrope": "^5.2.5",
+    "@fontsource-variable/geist-mono": "^5.2.5"
+  },
+  "devDependencies": {
+    "@astrojs/mdx": "^7.0.3",
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.1.7",
+    "tailwindcss": "^4.1.7",
+    "typescript": "^5.8.3",
+    "playwright": "^1.63.0"
+  }
+}
