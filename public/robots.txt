@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nicolasramos.es/sitemap-index.xml
