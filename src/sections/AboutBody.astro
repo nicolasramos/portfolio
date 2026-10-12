@@ -29,6 +29,17 @@ const p = paths[locale];
     </div>
 
     <Reveal delay={120} as="aside" class="h-max rounded-2xl border border-line bg-panel p-6">
+      <img
+        src="/brand/portrait.webp"
+        width="800"
+        height="894"
+        alt={locale === "es"
+          ? "Retrato en blanco y negro de Nicolás Ramos"
+          : "Black-and-white portrait of Nicolás Ramos"}
+        class="mb-6 w-full rounded-xl"
+        loading="lazy"
+        decoding="async"
+      />
       <h2 class="label-mono">{t.about.factsTitle}</h2>
       <dl class="mt-4 space-y-3 text-base">
         {
@@ -59,7 +70,7 @@ const p = paths[locale];
   </Reveal>
 
   <Reveal class="mt-16">
-    <a href={p.contact} class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-ink active:scale-[0.98]">
+    <a href={p.contact} class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-white/80 active:scale-[0.98]">
       {t.finalCta.primary}
       <Icons name="arrow" class="h-4 w-4" />
     </a>

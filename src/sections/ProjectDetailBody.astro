@@ -29,7 +29,7 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(`${project.
       <p class="mt-4 max-w-[680px] text-lg text-muted">{project.tagline[locale]}</p>
     </Reveal>
     <Reveal delay={100} class="mt-6 flex flex-wrap gap-3">
-      <a href={project.url} rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-ink active:scale-[0.98]">
+      <a href={project.url} rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-white/80 active:scale-[0.98]">
         <Icons name="github" class="h-4 w-4" />
         {t.project.visit}
       </a>

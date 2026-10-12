@@ -29,7 +29,7 @@ const items = [
     class="nav-shell mx-auto mt-6 flex w-max max-w-full items-center gap-3 rounded-full border border-line bg-black/60 px-3 py-2 backdrop-blur-xl"
   >
     <a href={p.home} class="flex items-center gap-2 pl-1 text-ink">
-      <span class="font-mono text-base font-semibold tracking-tight">NR</span>
+      <img src="/brand/nr_mark.webp" width="40" height="20" alt="Nicolás Ramos" class="h-[18px] w-auto" decoding="async" />
     </a>
 
     <ul class="hidden items-center gap-3 md:flex">
@@ -40,7 +40,7 @@ const items = [
               href={item.href}
               aria-current={current === item.key ? "page" : undefined}
               class:list={[
-                "rounded-full px-3 py-2 text-sm font-medium hover:text-accent",
+                "rounded-full px-3 py-2 text-sm font-medium hover:text-ink hover:underline",
                 current === item.key ? "text-accent" : "text-muted",
               ]}
             >
@@ -61,7 +61,7 @@ const items = [
       </a>
       <a
         href={p.contact}
-        class="hidden rounded-full bg-accent px-3 py-2 text-sm font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-ink active:scale-[0.98] md:inline-block"
+        class="hidden rounded-full bg-accent px-3 py-2 text-sm font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-white/80 active:scale-[0.98] md:inline-block"
       >
         {t.hero.primary}
       </a>
@@ -96,7 +96,7 @@ const items = [
                 style={`transition-delay: ${100 + index * 50}ms`}
                 aria-current={current === item.key ? "page" : undefined}
                 class:list={[
-                  "block text-4xl font-semibold tracking-tight hover:text-accent",
+                  "block text-4xl font-semibold tracking-tight hover:text-ink hover:underline",
                   current === item.key ? "text-accent" : "text-ink",
                 ]}
               >
