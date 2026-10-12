@@ -5,12 +5,14 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "refresh": "node scripts/refresh-repos.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro build",
     "preview:lan": "astro preview --host 0.0.0.0 --port 4321",
     "verify": "node scripts/verify.mjs",
     "world-check": "node scripts/world-check.mjs",
+    "pages-check": "node scripts/pages-check.mjs",
     "contrast": "node scripts/contrast.mjs",
     "audit": "node scripts/audit.mjs"
   },

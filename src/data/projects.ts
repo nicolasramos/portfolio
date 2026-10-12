@@ -1,12 +1,29 @@
-export type Project = {
-  slug: string;
-  repo: string;
-  url: string;
+import facts from "./repos.json";
+
+/**
+ * Facts (stars, forks, language, dates, license, open issues, contributors,
+ * latest release) are read from GitHub by `npm run refresh`, which rewrites the
+ * committed snapshot `src/data/repos.json`. The build itself never hits the API.
+ */
+export type Facts = {
   stars: number;
   forks: number;
   language: string;
   pushed: string;
-  license: string;
+  created: string;
+  license: string | null;
+  openIssues: number;
+  contributors: number;
+  release: string | null;
+  defaultBranch: string;
+};
+
+type Narrative = {
+  slug: string;
+  /** Still from public/world/ used as the card's monochrome band. */
+  art: string;
+  repo: string;
+  url: string;
   name: string;
   tagline: { es: string; en: string };
   body: { es: string[]; en: string[] };
@@ -14,20 +31,19 @@ export type Project = {
   stack: string[];
 };
 
-/**
- * Facts (stars, forks, language, last push) come from the GitHub API and are
- * refreshed by `node scripts/refresh-repos.mjs` at build time.
- */
-const projects: Project[] = [
+export type Project = Narrative & Facts;
+
+const narrative: Narrative[] = [
   {
     slug: "odooclaw",
+    art: "agents",
     repo: "nicolasramos/odooclaw",
     url: "https://github.com/nicolasramos/odooclaw",
-    stars: 71,
-    forks: 38,
-    language: "Go",
-    pushed: "2026-10-06",
-    license: "MIT",
+
+
+
+
+
     name: "OdooClaw",
     tagline: {
       es: "IA 100 por cien local para Odoo, con modelos entrenados por mí.",
@@ -59,13 +75,14 @@ const projects: Project[] = [
   },
   {
     slug: "odoo-addons",
+    art: "system",
     repo: "nicolasramos/odoo-addons",
     url: "https://github.com/nicolasramos/odoo-addons",
-    stars: 6,
-    forks: 5,
-    language: "Python",
-    pushed: "2026-10-04",
-    license: "MIT",
+
+
+
+
+
     name: "odoo-addons",
     tagline: {
       es: "Módulos Odoo públicos, instalables desde cualquier addons path.",
@@ -97,13 +114,14 @@ const projects: Project[] = [
   },
   {
     slug: "odooclaw-mcp",
+    art: "brief",
     repo: "nicolasramos/odooclaw-mcp",
     url: "https://github.com/nicolasramos/odooclaw-mcp",
-    stars: 5,
-    forks: 3,
-    language: "Python",
-    pushed: "2026-08-15",
-    license: "MIT",
+
+
+
+
+
     name: "odooclaw-mcp",
     tagline: {
       es: "Servidor MCP independiente para Odoo 18 sobre stdio.",
@@ -135,13 +153,14 @@ const projects: Project[] = [
   },
   {
     slug: "odoo-agent-runtime",
+    art: "automation",
     repo: "nicolasramos/odoo-agent-runtime",
     url: "https://github.com/nicolasramos/odoo-agent-runtime",
-    stars: 3,
-    forks: 1,
-    language: "Python",
-    pushed: "2026-08-17",
-    license: "MIT",
+
+
+
+
+
     name: "odoo-agent-runtime",
     tagline: {
       es: "Runtime multiplataforma para el sistema de agentes de Odoo.",
@@ -173,13 +192,14 @@ const projects: Project[] = [
   },
   {
     slug: "openproject-vscode-extension",
+    art: "workshop",
     repo: "nicolasramos/openproject-vscode-extension",
     url: "https://github.com/nicolasramos/openproject-vscode-extension",
-    stars: 3,
-    forks: 0,
-    language: "TypeScript",
-    pushed: "2026-02-18",
-    license: "MIT",
+
+
+
+
+
     name: "openproject-vscode-extension",
     tagline: {
       es: "Gestiona tus work packages de OpenProject desde VS Code.",
@@ -211,13 +231,14 @@ const projects: Project[] = [
   },
   {
     slug: "odooclaw-doodba",
+    art: "finale",
     repo: "nicolasramos/odooclaw-doodba",
     url: "https://github.com/nicolasramos/odooclaw-doodba",
-    stars: 1,
-    forks: 1,
-    language: "Go",
-    pushed: "2026-10-02",
-    license: "MIT",
+
+
+
+
+
     name: "odooclaw-doodba",
     tagline: {
       es: "Plantilla Doodba para arrancar Odoo con OdooClaw de forma segura.",
@@ -249,6 +270,16 @@ const projects: Project[] = [
   },
 ];
 
+const known = facts.repos as Record<string, Facts>;
+
+const projects: Project[] = narrative.map((entry) => {
+  const repo = known[entry.repo];
+  if (!repo) {
+    throw new Error(`src/data/repos.json has no facts for ${entry.repo} — run npm run refresh`);
+  }
+  return { ...entry, ...repo };
+});
+
 export default projects;
 
 export const totals = {
@@ -256,3 +287,5 @@ export const totals = {
   forks: projects.reduce((sum, p) => sum + p.forks, 0),
   repos: projects.length,
 };
+
+export const languages = [...new Set(projects.map((p) => p.language))].sort();
