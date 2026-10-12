@@ -1,0 +1,23 @@
+# Coolify Configuration for nicolasramos.es
+# This file documents the Coolify setup — Coolify reads it from the repo root.
+
+[build]
+# Coolify will use the Dockerfile automatically
+# Build context: repo root
+
+[deploy]
+# Health check
+healthcheck_path = "/"
+healthcheck_interval = 30
+healthcheck_timeout = 5
+healthcheck_retries = 3
+
+# Domains
+domains = ["nicolasramos.es", "www.nicolasramos.es"]
+
+# SSL — Coolify/Traefik handles this automatically
+# Just make sure DNS points to the server
+
+# Environment variables (set via Coolify UI, not here)
+# PLAUSIBLE_URL — si usas Plausible self-hosted
+# PLAUSIBLE_DOMAIN — nicolasramos.es
