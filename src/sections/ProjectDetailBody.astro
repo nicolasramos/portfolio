@@ -1,0 +1,115 @@
+---
+import type { Project } from "../data/projects";
+import projects from "../data/projects";
+import type { Locale } from "../data/site";
+import { contact } from "../data/site";
+import paths from "../data/site";
+import Reveal from "../components/Reveal.astro";
+import Icons from "../components/Icons.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+
+type Props = { project: Project; locale: Locale; t: Record<string, any> };
+const { project, locale, t } = Astro.props;
+const p = paths[locale];
+const related = projects.filter((item) => item.slug !== project.slug).slice(0, 3);
+const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(`${project.name}: ${project.tagline[locale]}`)}`;
+---
+
+<article class="mx-auto max-w-6xl px-6 pt-8">
+  <Reveal>
+    <a href={p.projects} class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted hover:text-ink">
+      <Icons name="arrow" class="h-4 w-4 rotate-180" />
+      {t.project.back}
+    </a>
+  </Reveal>
+
+  <header class="mt-6 border-b border-line pb-8">
+    <Reveal>
+      <h1 class="hero-ink text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{project.name}</h1>
+      <p class="mt-4 max-w-[680px] text-lg text-muted">{project.tagline[locale]}</p>
+    </Reveal>
+    <Reveal delay={100} class="mt-6 flex flex-wrap gap-3">
+      <a href={project.url} rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-ink active:scale-[0.98]">
+        <Icons name="github" class="h-4 w-4" />
+        {t.project.visit}
+      </a>
+      <a href={mailto} class="inline-flex items-center gap-2 rounded-full border border-line px-3 py-2 text-base font-semibold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-line-strong active:scale-[0.98]">
+        <Icons name="mail" class="h-4 w-4" />
+        {t.finalCta.primary}
+      </a>
+    </Reveal>
+  </header>
+
+  <div class="mt-8 grid gap-8 lg:grid-cols-3">
+    <div class="lg:col-span-2">
+      <Reveal as="section">
+        <h2 class="text-xl font-semibold">{t.project.overview}</h2>
+        {
+          project.body[locale].map((paragraph: string) => (
+            <p class="mt-4 max-w-[680px] text-lg text-muted">{paragraph}</p>
+          ))
+        }
+      </Reveal>
+
+      <Reveal as="section" delay={80} class="mt-8">
+        <h2 class="text-xl font-semibold">{t.project.highlights}</h2>
+        <ul class="mt-4 space-y-3">
+          {
+            project.highlights[locale].map((point: string) => (
+              <li class="flex items-start gap-3 text-base text-muted">
+                <Icons name="check" class="mt-1 h-4 w-4 shrink-0 text-accent" />
+                <span>{point}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </Reveal>
+
+      <Reveal as="section" delay={140} class="mt-8">
+        <h2 class="text-xl font-semibold">{t.project.stack}</h2>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {
+            project.stack.map((tech: string) => (
+              <li class="rounded-full border border-line px-3 py-2 font-mono text-xs uppercase tracking-widest text-muted">{tech}</li>
+            ))
+          }
+        </ul>
+      </Reveal>
+    </div>
+
+    <Reveal delay={120} as="aside" class="h-max rounded-2xl border border-line bg-panel p-6">
+      <h2 class="label-mono">{t.project.stats}</h2>
+      <dl class="mt-4 space-y-3 text-base">
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-muted">{t.project.repo}</dt>
+          <dd class="font-mono text-sm">{project.repo}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-muted">{t.project.language}</dt>
+          <dd class="font-mono text-sm">{project.language}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-muted">{t.project.updated}</dt>
+          <dd class="font-mono text-sm">{project.pushed}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-muted">{t.project.stars}</dt>
+          <dd class="inline-flex items-center gap-2 font-mono text-sm"><Icons name="star" class="h-4 w-4 text-accent" />{project.stars}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-muted">{t.project.forks}</dt>
+          <dd class="font-mono text-sm">{project.forks}</dd>
+        </div>
+      </dl>
+    </Reveal>
+  </div>
+
+  <section class="mt-24 border-t border-line pt-16">
+    <h2 class="text-2xl font-semibold">{t.project.related}</h2>
+    <div class="mt-8 grid gap-3 md:grid-cols-3">
+      {related.map((item, index) => (
+        <ProjectCard project={item} locale={locale} t={t} delay={index * 60} />
+      ))}
+    </div>
+  </section>
+</article>

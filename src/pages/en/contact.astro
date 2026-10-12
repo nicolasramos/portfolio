@@ -1,0 +1,15 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Body from "../../sections/ContactBody.astro";
+import t from "../../i18n/en/index.ts";
+---
+
+<Layout
+  locale="en"
+  t={t}
+  current="contact"
+  title={`${t.contact.title} · Nicolás Ramos`}
+  description={t.contact.intro}
+>
+  <Body locale="en" t={t} />
+</Layout>

@@ -1,0 +1,33 @@
+---
+import type { Locale } from "../data/site";
+import { contact } from "../data/site";
+import projects, { totals } from "../data/projects";
+import Section from "../components/Section.astro";
+import Reveal from "../components/Reveal.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import Icons from "../components/Icons.astro";
+
+type Props = { locale: Locale; t: Record<string, any> };
+const { locale, t } = Astro.props;
+---
+
+<Section eyebrow={t.projectsPage.eyebrow} title={t.projectsPage.title} intro={t.projectsPage.intro} class="pt-8" level={1}>
+  <Reveal class="mt-8 flex flex-wrap gap-6 border-y border-line py-6 font-mono text-xs uppercase tracking-widest text-muted">
+    <span class="inline-flex items-center gap-2"><Icons name="star" class="h-4 w-4 text-accent" />{totals.stars} {t.projectsSection.stars}</span>
+    <span class="inline-flex items-center gap-2"><Icons name="fork" class="h-4 w-4" />{totals.forks} {t.projectsSection.forks}</span>
+    <span class="inline-flex items-center gap-2"><Icons name="code" class="h-4 w-4" />{totals.repos} {locale === "es" ? "repositorios propios" : "own repositories"}</span>
+  </Reveal>
+
+  <div class="mt-8 grid gap-3 md:grid-cols-2">
+    {projects.map((project, index) => (
+      <ProjectCard project={project} locale={locale} t={t} delay={index * 60} />
+    ))}
+  </div>
+
+  <Reveal class="mt-8">
+    <a href={contact.github} rel="noopener" class="inline-flex items-center gap-2 text-base font-semibold text-accent hover:text-ink">
+      {t.projectsSection.cta}
+      <Icons name="arrow" class="h-4 w-4" />
+    </a>
+  </Reveal>
+</Section>

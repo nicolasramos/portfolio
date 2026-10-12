@@ -1,0 +1,71 @@
+---
+import type { Locale } from "../data/site";
+import { contact } from "../data/site";
+import paths from "../data/site";
+import Reveal from "../components/Reveal.astro";
+import Section from "../components/Section.astro";
+import Icons from "../components/Icons.astro";
+import TaglineReveal from "../components/TaglineReveal.astro";
+
+type Props = { locale: Locale; t: Record<string, any> };
+const { locale, t } = Astro.props;
+const p = paths[locale];
+---
+
+<Section eyebrow={t.about.eyebrow} title={t.about.title} class="pt-8" level={1}>
+  <Reveal delay={80}>
+    <p class="mt-6 max-w-[680px] text-xl text-muted">{t.about.lead}</p>
+  </Reveal>
+
+  <div class="mt-8 grid gap-8 lg:grid-cols-3">
+    <div class="lg:col-span-2">
+      {
+        t.about.body.map((paragraph: string, index: number) => (
+          <Reveal delay={index * 70}>
+            <p class="mb-4 max-w-[680px] text-base text-muted">{paragraph}</p>
+          </Reveal>
+        ))
+      }
+    </div>
+
+    <Reveal delay={120} as="aside" class="h-max rounded-2xl border border-line bg-panel p-6">
+      <h2 class="label-mono">{t.about.factsTitle}</h2>
+      <dl class="mt-4 space-y-3 text-base">
+        {
+          t.about.facts.map((fact: any) => (
+            <div>
+              <dt class="font-mono text-xs uppercase tracking-widest text-muted">{fact.label}</dt>
+              <dd class="mt-1">{fact.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <a href={contact.blog} rel="noopener" class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent hover:text-ink">
+        {t.footer.blog}
+        <Icons name="arrow" class="h-4 w-4" />
+      </a>
+    </Reveal>
+  </div>
+
+  <Reveal class="mt-16">
+    <h2 class="text-xl font-semibold">{t.about.stackTitle}</h2>
+    <ul class="mt-4 flex flex-wrap gap-2">
+      {
+        t.about.stack.map((tech: string) => (
+          <li class="rounded-full border border-line px-3 py-2 font-mono text-xs uppercase tracking-widest text-muted">{tech}</li>
+        ))
+      }
+    </ul>
+  </Reveal>
+
+  <Reveal class="mt-16">
+    <a href={p.contact} class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-ink active:scale-[0.98]">
+      {t.finalCta.primary}
+      <Icons name="arrow" class="h-4 w-4" />
+    </a>
+  </Reveal>
+</Section>
+
+<div class="pt-24">
+  <TaglineReveal text={t.tagline.text} />
+</div>

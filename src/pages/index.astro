@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Body from "../sections/HomeBody.astro";
+import t from "../i18n/es/index.ts";
+---
+
+<Layout
+  locale="es"
+  t={t}
+  current="home"
+  title={t.meta.title}
+  description={t.meta.description}
+>
+  <Body locale="es" t={t} />
+</Layout>
