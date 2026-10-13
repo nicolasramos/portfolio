@@ -45,6 +45,13 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
+    # Without this the deploy job runs on the repository's default token
+    # permissions and pushing to ghcr fails with "installation not allowed to
+    # Create organization package".
+    permissions:
+      contents: read
+      packages: write
+
     # The notify step below is gated on env.COOLIFY_WEBHOOK_URL, and a secret is
     # only visible through env when it is mapped here first. Without this mapping
     # the condition was always empty and Coolify was never told about a new image.
