@@ -1,7 +1,8 @@
 # Generation pipeline (audiovisual PC)
 
 Everything under `public/world/` is generated, not bought. The render box is the
-audiovisual PC — ComfyUI on `192.168.1.24:8188` (RTX 5070 Ti) — and the chain is:
+audiovisual PC — ComfyUI on the RTX 5070 Ti workstation, addressed through
+`COMFY_SERVER` (e.g. `export COMFY_SERVER=http://<that-machine>:8188`) — and the chain is:
 
 | Step | Script | Model | Measured |
 |---|---|---|---|

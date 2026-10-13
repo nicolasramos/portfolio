@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Minimal ComfyUI API client for the audiovisual PC (192.168.1.24:8188).
+"""Minimal ComfyUI API client for the audiovisual PC.
+
+Point it at the machine with COMFY_SERVER (for example http://10.0.0.5:8188);
+it defaults to a local ComfyUI on this host.
 
 Usage:
   python3 tools/comfy.py submit workflow.json [--out DIR] [--timeout 1800]
@@ -15,7 +18,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-SERVER = os.environ.get("COMFY_SERVER", "http://192.168.1.24:8188")
+SERVER = os.environ.get("COMFY_SERVER", "http://127.0.0.1:8188")
 
 
 def _req(path, data=None, boundary=None, raw=False):
