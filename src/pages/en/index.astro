@@ -1,15 +1,16 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Body from "../../sections/HomeBody.astro";
+import ScrollWorld from "../../components/ScrollWorld.astro";
 import t from "../../i18n/en/index.ts";
 ---
 
 <Layout
+  bare
   locale="en"
   t={t}
   current="home"
   title={t.meta.title}
   description={t.meta.description}
 >
-  <Body locale="en" t={t} />
+  <ScrollWorld locale="en" />
 </Layout>

@@ -29,7 +29,7 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(`${project.
       <p class="mt-4 max-w-[680px] text-lg text-muted">{project.tagline[locale]}</p>
     </Reveal>
     <Reveal delay={100} class="mt-6 flex flex-wrap gap-3">
-      <a href={project.url} rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-ink active:scale-[0.98]">
+      <a href={project.url} rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-white/80 active:scale-[0.98]">
         <Icons name="github" class="h-4 w-4" />
         {t.project.visit}
       </a>
@@ -39,6 +39,25 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(`${project.
       </a>
     </Reveal>
   </header>
+
+  <Reveal delay={80} class="mt-8">
+    <div class="relative overflow-hidden rounded-2xl border border-line">
+      <img
+        src={`/world/${project.art}.webp`}
+        alt=""
+        width="1280"
+        height="704"
+        loading="lazy"
+        decoding="async"
+        class="h-52 w-full object-cover opacity-60 grayscale sm:h-72"
+      />
+      <span
+        class="absolute inset-0"
+        style="background-image:linear-gradient(180deg,rgba(10,10,10,.1) 0%,rgba(10,10,10,.75) 100%)"
+        aria-hidden="true"
+      ></span>
+    </div>
+  </Reveal>
 
   <div class="mt-8 grid gap-8 lg:grid-cols-3">
     <div class="lg:col-span-2">
@@ -100,6 +119,30 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(`${project.
           <dt class="text-muted">{t.project.forks}</dt>
           <dd class="font-mono text-sm">{project.forks}</dd>
         </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-muted">{t.project.openIssues}</dt>
+          <dd class="font-mono text-sm">{project.openIssues}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-muted">{t.project.contributors}</dt>
+          <dd class="font-mono text-sm">{project.contributors}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-muted">{t.project.created}</dt>
+          <dd class="font-mono text-sm">{project.created}</dd>
+        </div>
+        {project.release && (
+          <div class="flex items-center justify-between gap-4">
+            <dt class="text-muted">{t.project.release}</dt>
+            <dd class="font-mono text-sm">{project.release}</dd>
+          </div>
+        )}
+        {project.license && (
+          <div class="flex items-center justify-between gap-4">
+            <dt class="text-muted">{t.project.license}</dt>
+            <dd class="font-mono text-sm">{project.license}</dd>
+          </div>
+        )}
       </dl>
     </Reveal>
   </div>

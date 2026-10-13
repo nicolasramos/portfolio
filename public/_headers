@@ -1,0 +1,20 @@
+# Response headers for static hosts (Cloudflare Pages, Netlify), mirroring
+# nginx/default.conf.
+
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# The six scroll-world clips are ~21 MB per home visit and never change without
+# a new build, so they are cached hard.
+/world/*
+  Cache-Control: public, max-age=2592000
+
+/brand/*
+  Cache-Control: public, max-age=2592000
+
+# Astro hashes these filenames, so they can be immutable.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

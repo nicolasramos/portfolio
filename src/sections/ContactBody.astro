@@ -17,7 +17,7 @@ const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(t.contact.m
       <h2 class="text-xl font-semibold">{t.contact.emailLabel}</h2>
       <p data-email class="mt-4 break-all font-mono text-2xl text-accent">{contact.email}</p>
       <div class="mt-6 flex flex-wrap gap-3">
-        <a href={mailto} class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-ink active:scale-[0.98]">
+        <a href={mailto} class="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-2 text-base font-semibold text-black transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-white/80 active:scale-[0.98]">
           <Icons name="mail" class="h-4 w-4" />
           {t.finalCta.primary}
         </a>

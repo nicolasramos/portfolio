@@ -1,0 +1,77 @@
+{
+  "generated": "2026-10-12",
+  "repos": {
+    "nicolasramos/odooclaw": {
+      "stars": 71,
+      "forks": 38,
+      "language": "Go",
+      "pushed": "2026-10-06",
+      "created": "2026-03-04",
+      "license": null,
+      "openIssues": 14,
+      "contributors": 2,
+      "release": "v1.0.0",
+      "defaultBranch": "main"
+    },
+    "nicolasramos/odoo-addons": {
+      "stars": 6,
+      "forks": 6,
+      "language": "Python",
+      "pushed": "2026-10-04",
+      "created": "2026-04-16",
+      "license": null,
+      "openIssues": 4,
+      "contributors": 3,
+      "release": null,
+      "defaultBranch": "18.0"
+    },
+    "nicolasramos/odooclaw-mcp": {
+      "stars": 5,
+      "forks": 3,
+      "language": "Python",
+      "pushed": "2026-08-15",
+      "created": "2026-04-03",
+      "license": "MIT",
+      "openIssues": 3,
+      "contributors": 2,
+      "release": "v2.2.0",
+      "defaultBranch": "main"
+    },
+    "nicolasramos/odoo-agent-runtime": {
+      "stars": 3,
+      "forks": 1,
+      "language": "Python",
+      "pushed": "2026-08-17",
+      "created": "2026-07-09",
+      "license": "LGPL-3.0",
+      "openIssues": 1,
+      "contributors": 1,
+      "release": null,
+      "defaultBranch": "main"
+    },
+    "nicolasramos/openproject-vscode-extension": {
+      "stars": 3,
+      "forks": 0,
+      "language": "TypeScript",
+      "pushed": "2026-02-18",
+      "created": "2026-02-13",
+      "license": "MIT",
+      "openIssues": 0,
+      "contributors": 1,
+      "release": null,
+      "defaultBranch": "main"
+    },
+    "nicolasramos/odooclaw-doodba": {
+      "stars": 1,
+      "forks": 1,
+      "language": "Go",
+      "pushed": "2026-10-02",
+      "created": "2026-04-29",
+      "license": "MIT",
+      "openIssues": 2,
+      "contributors": 2,
+      "release": "v18.0.0",
+      "defaultBranch": "18.0"
+    }
+  }
+}

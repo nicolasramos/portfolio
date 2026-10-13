@@ -1,0 +1,74 @@
+{
+  "brief": {
+    "img": "black and white 35mm film still, a dark wooden desk at night lit by one hard desk lamp, open paper notebook and a mechanical pencil, deep black shadows, dust drifting in the beam, empty chair behind, cinematic wide shot, extreme high contrast monochrome, rich blacks, fine film grain, no people, no text, no logos, no colour",
+    "motion": "very slow cinematic push-in toward the notebook, dust particles drifting through the lamp beam, the lamp light flickers almost imperceptibly, static camera otherwise, black and white film grain",
+    "title_es": "Todo empieza con un problema real",
+    "title_en": "It starts with a real problem",
+    "eyebrow_es": "Paso 01 · El encargo",
+    "eyebrow_en": "Step 01 · The brief",
+    "body_es": "Antes de tocar nada, entender el negocio: qué duele, qué cuesta dinero y qué se puede dejar de hacer a mano.",
+    "body_en": "Before touching anything: understand the business, what hurts, what costs money and what should stop being manual.",
+    "label_es": "El encargo",
+    "label_en": "The brief"
+  },
+  "system": {
+    "img": "black and white cinematic wide shot, endless dark industrial hall, thousands of paper documents hanging from overhead conveyor rails, one hard shaft of light, low fog, brutalist concrete architecture, extreme high contrast monochrome, deep blacks, film grain, no people, no text, no colour",
+    "motion": "slow forward camera glide down the hall, documents sliding along the overhead rails, fog rolling, shaft of light, black and white, film grain, no cuts",
+    "title_es": "El sistema ordena el caos",
+    "title_en": "The system orders the chaos",
+    "eyebrow_es": "Paso 02 · Odoo",
+    "eyebrow_en": "Step 02 · Odoo",
+    "body_es": "ERP a medida sobre Odoo: ventas, inventario, contabilidad y TPV hablando entre sí, sin hojas de cálculo paralelas.",
+    "body_en": "Custom Odoo ERP: sales, inventory, accounting and POS talking to each other, no parallel spreadsheets.",
+    "label_es": "El sistema",
+    "label_en": "The system"
+  },
+  "agents": {
+    "img": "black and white cinematic shot, dark hall with a floating grid of glowing white screens arranged in rows, thin light beams, drifting dust, mirror-like wet floor reflections, extreme high contrast monochrome, deep blacks, film grain, no people, no text, no colour",
+    "motion": "slow lateral camera move past the grid of glowing screens, screens pulsing softly, dust in the beams, reflections moving on the wet floor, black and white, film grain, no cuts",
+    "title_es": "Agentes que trabajan de madrugada",
+    "title_en": "Agents that work at dawn",
+    "eyebrow_es": "Paso 03 · IA aplicada",
+    "eyebrow_en": "Step 03 · Applied AI",
+    "body_es": "Agentes sobre modelos locales que clasifican, redactan, revisan y avisan. Cero datos fuera de casa.",
+    "body_en": "Agents on local models that classify, draft, review and alert. No data leaves the building.",
+    "label_es": "Los agentes",
+    "label_en": "The agents"
+  },
+  "automation": {
+    "img": "black and white macro cinematic shot, polished steel gears glass tubes and pipes carrying glowing white fluid, moving by themselves in total darkness, steam, hard rim light, extreme high contrast monochrome, deep blacks, film grain, no people, no text, no colour",
+    "motion": "gears turning steadily, glowing fluid flowing through the glass tubes, steam rising slowly, subtle camera drift, black and white, film grain, no cuts",
+    "title_es": "La máquina trabaja sola",
+    "title_en": "The machine runs itself",
+    "eyebrow_es": "Paso 04 · Automatización",
+    "eyebrow_en": "Step 04 · Automation",
+    "body_es": "Flujos, integraciones y reglas: lo que antes era copiar y pegar hoy ocurre sin intervención humana.",
+    "body_en": "Workflows, integrations and rules: what used to be copy-paste now happens with no human in the loop.",
+    "label_es": "La automatización",
+    "label_en": "Automation"
+  },
+  "workshop": {
+    "img": "black and white cinematic shot, a workshop with a tall door wide open flooding the room with white daylight, tools neatly hanging on a pegboard wall, worn workbench, a plant standing in the light, dust motes, extreme high contrast monochrome, deep blacks, film grain, no people, no text, no colour",
+    "motion": "slow push toward the open door with the daylight, dust motes floating across the light, curtain of light brightening, black and white, film grain, no cuts",
+    "title_es": "El taller está abierto",
+    "title_en": "The workshop is open",
+    "eyebrow_es": "Paso 05 · Open source",
+    "eyebrow_en": "Step 05 · Open source",
+    "body_es": "OdooClaw, MCP y extensiones publicadas: el trabajo se comparte, se audita y se reutiliza.",
+    "body_en": "OdooClaw, MCP and published extensions: the work is shared, audited and reused.",
+    "label_es": "El taller",
+    "label_en": "The workshop"
+  },
+  "finale": {
+    "img": "black and white cinematic shot of a raw dark concrete wall lit by a hard raking light from the left, fine dust floating in the beam, subtle surface texture and pitting, deep black shadows on the right, extreme high contrast monochrome, film grain, empty, no people, no text, no logo, no colour",
+    "motion": "a hard beam of light sweeps very slowly across the concrete wall from left to right, dust motes drift through the light, the surface texture shifts with the light, black and white, film grain, no cuts, no camera shake",
+    "title_es": "Hablemos de tu máquina",
+    "title_en": "Let's talk about your machine",
+    "eyebrow_es": "Paso 06 · Contacto",
+    "eyebrow_en": "Step 06 · Contact",
+    "body_es": "Diagnóstico gratis de 30 minutos: me cuentas el atasco, te digo qué se automatiza y qué no vale la pena.",
+    "body_en": "Free 30-minute diagnosis: tell me the bottleneck, I tell you what to automate and what is not worth it.",
+    "label_es": "Hablemos",
+    "label_en": "Let's talk"
+  }
+}

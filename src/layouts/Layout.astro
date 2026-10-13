@@ -13,6 +13,8 @@ type Props = {
   current?: string;
   ogImage?: string;
   noindex?: boolean;
+  /** Immersive pages (the scroll world) render without the site chrome. */
+  bare?: boolean;
 };
 
 const {
@@ -23,6 +25,7 @@ const {
   current = "home",
   ogImage = "/og-image.png",
   noindex = false,
+  bare = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -84,7 +87,7 @@ const jsonLd = {
     }
   </head>
 
-  <body class="min-h-screen bg-base text-ink antialiased">
+  <body class="min-h-screen bg-night text-ink antialiased">
     <a
       href="#contenido"
       class="sr-only rounded-lg focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
@@ -92,13 +95,13 @@ const jsonLd = {
       {t.skip}
     </a>
 
-    <Header locale={locale} t={t} current={current as any} />
+    {!bare && <Header locale={locale} t={t} current={current as any} />}
 
-    <main id="contenido" class="pt-24">
+    <main id="contenido" class={bare ? "" : "pt-24"}>
       <slot />
     </main>
 
-    <Footer locale={locale} t={t} />
+    {!bare && <Footer locale={locale} t={t} />}
 
     <script>
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

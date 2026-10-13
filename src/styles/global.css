@@ -7,17 +7,21 @@
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 
   /* Dark surfaces restricted to the approved palette */
-  --color-base: #000000;
-  --color-panel: #181818;
-  --color-raised: #1f1f1f;
-  --color-warm: #131209;
+  /* Strict monochrome: no hue anywhere. Accent is paper white, dim accent is grey.
+     The darkest surface is called `night`, never `base`: Tailwind v4 would compile
+     `text-base` to `color: var(--color-base)` and every body-text element would
+     silently turn black on black. */
+  --color-night: #000000;
+  --color-panel: #141414;
+  --color-raised: #1c1c1c;
+  --color-warm: #101010;
   --color-line: #272727;
   --color-line-strong: #313131;
 
   --color-ink: #ffffff;
   --color-muted: #9b9b9b;
-  --color-accent: #ffb454;
-  --color-accent-dim: #b97f33;
+  --color-accent: #ffffff;
+  --color-accent-dim: #8f8f8b;
 
   --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -29,7 +33,7 @@
   }
 
   body {
-    background-color: var(--color-base);
+    background-color: var(--color-night);
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv01";
@@ -53,6 +57,15 @@
   ::selection {
     background-color: var(--color-accent);
     color: #000000;
+  }
+
+  /* In a monochrome system the accent can no longer signal links by hue, so links
+     underline on hover/focus instead of changing colour. */
+  a.text-accent:hover,
+  a.text-accent:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
   }
 
   :focus-visible {
