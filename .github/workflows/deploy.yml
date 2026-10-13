@@ -45,6 +45,12 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
+    # The notify step below is gated on env.COOLIFY_WEBHOOK_URL, and a secret is
+    # only visible through env when it is mapped here first. Without this mapping
+    # the condition was always empty and Coolify was never told about a new image.
+    env:
+      COOLIFY_WEBHOOK_URL: ${{ secrets.COOLIFY_WEBHOOK_URL }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
