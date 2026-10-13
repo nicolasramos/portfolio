@@ -1,0 +1,26 @@
+# Canonical redirects for static hosts (Cloudflare Pages, Netlify).
+# Astro writes each page as <route>/index.html, so the trailing slash is the
+# canonical form; pointing a route at itself is a redirect loop. This file
+# mirrors nginx/default.conf so the SEO 301s survive whichever host is chosen.
+# GitHub Pages cannot do this: it has no redirect rules, and Astro's static
+# redirects are meta refreshes, which do not pass PageRank.
+
+# Pages, with and without the language switch
+/sobre-mi       /sobre-mi/          301
+/about          /en/about/          301
+/servicios      /servicios/         301
+/services       /en/servicios/      301
+/proyectos      /proyectos/         301
+/projects       /en/proyectos/      301
+/contacto       /contacto/          301
+/contact        /en/contacto/       301
+/contactus      /contacto/          301
+
+# The blog moved to nramos.dev
+/blog/*         https://nramos.dev/blog/:splat  301
+/blog           https://nramos.dev/blog/        301
+
+# Odoo 14 leftovers stay dead on purpose
+/web/*          /404.html           410
+/website/action /                   301
+/page/*         /                   301

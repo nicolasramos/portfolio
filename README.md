@@ -89,22 +89,40 @@ fallback leaves every element visible.
 
 ## Deploy
 
-The path is already in the repo: GitHub → GitHub Actions → an image in ghcr.io → Coolify.
+Three viable targets, and the repo supports all three without code changes. The number that
+decides it is the home page payload: the six scroll-world clips plus their posters are
+**21.8 MB per visit**.
 
-1. Push the branch, open the pull request, merge into `main`.
-2. In Coolify, create an application from this repository. Coolify picks up the `Dockerfile`
-   (node builds `dist/`, nginx serves it) — no build command to configure.
-3. Add the secret the workflow expects: `COOLIFY_WEBHOOK_URL`, the app deploy webhook. The
-   workflow posts the new image tag to it after a push to `main`. `GITHUB_TOKEN` comes from
-   Actions and the image lands in `ghcr.io/<owner>/<repo>`.
-4. Domains `nicolasramos.es` and `www.nicolasramos.es` are declared in `coolify.toml`; point DNS at
-   the Coolify host and let Traefik issue the certificate.
-5. Old Odoo 14 URLs are preserved by `nginx/default.conf` (301s to the canonical trailing-slash
-   form, blog to nramos.dev) and `/web/*` returns 410.
+| | GitHub Pages | Cloudflare Pages | Coolify (self-hosted) |
+| --- | --- | --- | --- |
+| Real 301 redirects | no — no redirect rules, and Astro's static redirects are meta refreshes | yes, `public/_redirects` | yes, `nginx/default.conf` |
+| Cache and security headers | no | yes, `public/_headers` | yes, `nginx/default.conf` |
+| Bandwidth for the clips | soft 100 GB/month ≈ 4,500 home visits | unlimited on the free tier | whatever the host's line provides |
+| Setup | Actions publishes `dist/` | connect the repo, `npm ci && npm run build`, output `dist` | already wired, needs one secret |
 
-Any static host also works, and is cheaper to operate: build `npm ci && npm run build`, publish
-`dist/`. Cloudflare Pages or Netlify need no changes. Note `public/world/` carries about 21 MB of
-video: if the clips get re-cut often, move `public/world/*.mp4` to Git LFS before the history grows.
+**Recommended: Cloudflare Pages.** Free, unlimited bandwidth, a CDN between the visitor and
+the video, and it honours `public/_redirects` (the Odoo 14 SEO 301s) and `public/_headers`
+(caching and security headers). Point the domain at Cloudflare, create a Pages project from the
+repository with build command `npm ci && npm run build` and output directory `dist`, then add
+`nicolasramos.es` and `www.nicolasramos.es` as custom domains.
+
+**The Coolify path stays wired** as the self-hosted option: GitHub Actions builds an image to
+ghcr.io and posts it to `secrets.COOLIFY_WEBHOOK_URL`; Coolify detects the `Dockerfile` (node
+builds, nginx serves `dist/`), and `nginx/default.conf` carries the same redirects and caching
+as `_redirects` and `_headers`. The trade is that every visit pulls ~22 MB through your own
+line and the site is only as up as that machine.
+
+**GitHub Pages** works mechanically (`actions/deploy-pages` publishing `dist/`), but it cannot
+issue the 301s the old Odoo URLs depend on and it caps bandwidth, so it is a poor home for a
+site whose hero is video.
+
+`www` → apex flattening and TLS are host settings in all three cases: Cloudflare and Coolify
+(Traefik) handle the certificate automatically; on nginx the certificate comes from Coolify's
+proxy in front of the container.
+
+One repo-size note for any choice: the clips live in `public/world/` (21.5 MB). If they get
+re-cut often, move them to Git LFS before the history grows, because every version of a clip
+stays in the pack forever.
 
 ## Facts and honesty
 
