@@ -45,6 +45,13 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
+    # Without this the deploy job runs with the repository's default token
+    # permissions and pushing to ghcr fails with "installation not allowed to
+    # Create organization package".
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
