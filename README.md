@@ -112,6 +112,19 @@ builds, nginx serves `dist/`), and `nginx/default.conf` carries the same redirec
 as `_redirects` and `_headers`. The trade is that every visit pulls ~22 MB through your own
 line and the site is only as up as that machine.
 
+To wire that path without clicking through the panel:
+
+```bash
+export COOLIFY_API_TOKEN=cn_...                       # created by a member of the owning team
+./tools/coolify-provision.sh --dry-run               # reads Coolify, prints what it would do
+./tools/coolify-provision.sh --set-webhook-secret    # project + app + domains + Actions secret
+```
+
+The script is idempotent — it reuses the project and the application when they already exist — and
+it needs no GitHub App because the repository is public (`POST /applications/public`). It never
+prints the deploy webhook: that URL carries the API token in its query string, so it goes straight
+into `gh secret set`. Give the token the minimum abilities and revoke it once the app is wired.
+
 **GitHub Pages** works mechanically (`actions/deploy-pages` publishing `dist/`), but it cannot
 issue the 301s the old Odoo URLs depend on and it caps bandwidth, so it is a poor home for a
 site whose hero is video.
