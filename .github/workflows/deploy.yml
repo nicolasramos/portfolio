@@ -52,11 +52,14 @@ jobs:
       contents: read
       packages: write
 
-    # The notify step below is gated on env.COOLIFY_WEBHOOK_URL, and a secret is
-    # only visible through env when it is mapped here first. Without this mapping
-    # the condition was always empty and Coolify was never told about a new image.
+    # A secret only reaches a step through `env` when it is mapped here first: an earlier
+    # version of this job gated on an env var it never mapped, so Coolify was never told.
+    # Coolify 4.1.x rejects a token in the query string, so CI uses the documented bearer
+    # header plus the app uuid.
     env:
-      COOLIFY_WEBHOOK_URL: ${{ secrets.COOLIFY_WEBHOOK_URL }}
+      COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+      COOLIFY_APP_UUID: ${{ secrets.COOLIFY_APP_UUID }}
+      COOLIFY_BASE_URL: ${{ secrets.COOLIFY_BASE_URL }}
 
     steps:
       - name: Checkout
@@ -87,8 +90,13 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Notify Coolify
-        if: env.COOLIFY_WEBHOOK_URL != ''
         run: |
-          curl -s -X POST "${{ secrets.COOLIFY_WEBHOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -d '{"image": "${{ steps.meta.outputs.tags }}"}'
+          set -euo pipefail
+          if [ -z "${COOLIFY_API_TOKEN:-}" ] || [ -z "${COOLIFY_APP_UUID:-}" ]; then
+            echo "::error::Set the COOLIFY_API_TOKEN and COOLIFY_APP_UUID secrets (tools/coolify-provision.sh --set-ci-secrets)."
+            exit 1
+          fi
+          base="${COOLIFY_BASE_URL:-https://app.nramos.dev/api/v1}"
+          curl -fsS -m 120 -X POST \
+            -H "Authorization: Bearer ${COOLIFY_API_TOKEN}" \
+            "${base}/deploy?uuid=${COOLIFY_APP_UUID}"
