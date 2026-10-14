@@ -22,6 +22,7 @@ BRANCH="${BRANCH:-main}"
 DOMAINS="${DOMAINS:-nicolasramos.es,www.nicolasramos.es}"
 BUILD_PACK="${BUILD_PACK:-dockerfile}"
 SERVER="${SERVER:-}"
+DESTINATION="${DESTINATION:-}"
 GH_REPO="${GH_REPO:-nicolasramos/portfolio}"
 
 DRY_RUN=0
@@ -40,6 +41,7 @@ Options
   --branch NAME       branch to track                     (main)
   --domains LIST      comma-separated domains             (nicolasramos.es,www.nicolasramos.es)
   --server UUID       Coolify server uuid; required only when the token sees more than one
+  --destination UUID  proxy destination; by default the one the other apps on that server use
   --no-deploy         create the app without starting the first deployment
   --set-webhook-secret  store the deploy webhook as the COOLIFY_WEBHOOK_URL Actions secret (gh)
   --print-webhook     also print the deploy webhook (it embeds the API token — avoid in shared logs)
@@ -56,6 +58,7 @@ while [ $# -gt 0 ]; do
     --branch) BRANCH="$2"; shift 2 ;;
     --domains) DOMAINS="$2"; shift 2 ;;
     --server) SERVER="$2"; shift 2 ;;
+    --destination) DESTINATION="$2"; shift 2 ;;
     --no-deploy) DEPLOY=0; shift ;;
     --set-webhook-secret) SET_WEBHOOK=1; shift ;;
     --print-webhook) PRINT_WEBHOOK=1; shift ;;
@@ -120,7 +123,7 @@ if [ -n "$project_uuid" ] && [ "$project_uuid" != null ]; then
   note "reusing existing project $project_uuid"
 else
   project_uuid="$(mutate POST /projects \
-    "$(jq -nc --arg n "$PROJECT_NAME" --arg d "Personal site — $(echo "$DOMAINS" | cut -d, -f1)" \
+    "$(jq -nc --arg n "$PROJECT_NAME" --arg d "Personal site for $(echo "$DOMAINS" | cut -d, -f1)" \
         '{name:$n, description:$d}')" \
     "create project ${PROJECT_NAME}" | jq -r '.uuid // empty')"
   [ -n "$project_uuid" ] || [ "$DRY_RUN" = 1 ] || die "no uuid came back from POST /projects"
@@ -162,14 +165,35 @@ app_uuid="$(printf '%s' "$apps" | jq -r --arg r "$REPO" --arg b "$BRANCH" \
 if [ -n "$app_uuid" ] && [ "$app_uuid" != null ]; then
   note "reusing existing application $app_uuid"
 else
+  # Coolify wants full URLs in `domains`, and it rejects bare hostnames with "Invalid URL".
+  norm_domains=""
+  IFS=',' read -ra _domains_in <<< "$DOMAINS"
+  for _d in "${_domains_in[@]}"; do
+    [ -n "$_d" ] || continue
+    case "$_d" in *://*) ;; *) _d="https://$_d" ;; esac
+    norm_domains="${norm_domains:+$norm_domains,}$_d"
+  done
+  note "domains: ${norm_domains}"
+  if [ -z "$DESTINATION" ]; then
+    # Coolify 4.1.x has no destinations endpoint: take the destination the other apps on this
+    # server already use, which is the only safe reading of "where the proxy listens".
+    DESTINATION="$(printf '%s' "$apps" | jq -r --arg s "$SERVER" \
+      '[.[] | select(.destination.server.uuid? == $s) | .destination.uuid]
+        | group_by(.) | map({u:.[0], n:length}) | sort_by(-.n) | (.[0].u // empty)')"
+    if [ -n "$DESTINATION" ]; then
+      note "destination taken from the other apps on this server: ${DESTINATION}"
+    fi
+  fi
   payload="$(jq -nc \
+    --arg dest "$DESTINATION" \
     --arg project "$project_uuid" --arg server "$SERVER" \
     --arg env "$env_name" --arg envuuid "$env_uuid" \
     --arg repo "$REPO" --arg branch "$BRANCH" --arg pack "$BUILD_PACK" \
-    --arg name "$APP_NAME" --arg domains "$DOMAINS" \
-    '{project_uuid:$project, server_uuid:$server, environment_name:$env,
+    --arg name "$APP_NAME" --arg domains "$norm_domains" \
+    '{project_uuid:$project, server_uuid:$server, destination_uuid:$dest, environment_name:$env,
       environment_uuid:$envuuid, git_repository:$repo, git_branch:$branch,
-      build_pack:$pack, name:$name, domains:$domains, is_auto_deploy_enabled:true}')"
+      build_pack:$pack, name:$name, domains:$domains, is_auto_deploy_enabled:true}
+      | if $dest == "" then del(.destination_uuid) else . end')"
   app_uuid="$(mutate POST /applications/public "$payload" \
     "create app ${APP_NAME} from ${REPO}@${BRANCH} -> ${DOMAINS}" | jq -r '.uuid // empty')"
   [ -n "$app_uuid" ] || [ "$DRY_RUN" = 1 ] || die "no uuid came back from POST /applications/public"
