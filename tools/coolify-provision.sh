@@ -10,7 +10,7 @@
 # The token decides the owning team: create it as a member of the team that should own the project
 # (for us, Root). Coolify has no team parameter on these endpoints.
 #
-# Requires: curl, jq. Optional: gh, only for --set-webhook-secret.
+# Requires: curl, jq. Optional: gh, only for --set-ci-secrets.
 
 set -euo pipefail
 
@@ -27,8 +27,7 @@ GH_REPO="${GH_REPO:-nicolasramos/portfolio}"
 
 DRY_RUN=0
 DEPLOY=1
-SET_WEBHOOK=0
-PRINT_WEBHOOK=0
+SET_CI_SECRETS=0
 
 usage() {
   awk 'NR>1 && /^#/ { sub(/^# ?/, ""); print; next } NR>1 { exit }' "$0"
@@ -43,8 +42,7 @@ Options
   --server UUID       Coolify server uuid; required only when the token sees more than one
   --destination UUID  proxy destination; by default the one the other apps on that server use
   --no-deploy         create the app without starting the first deployment
-  --set-webhook-secret  store the deploy webhook as the COOLIFY_WEBHOOK_URL Actions secret (gh)
-  --print-webhook     also print the deploy webhook (it embeds the API token — avoid in shared logs)
+  --set-ci-secrets    store the three Actions secrets the deploy job needs (needs gh)
   --dry-run           run every read, print every mutation, change nothing
   --base-url URL      Coolify API base                    (https://app.nramos.dev/api/v1)
 EOF
@@ -60,8 +58,7 @@ while [ $# -gt 0 ]; do
     --server) SERVER="$2"; shift 2 ;;
     --destination) DESTINATION="$2"; shift 2 ;;
     --no-deploy) DEPLOY=0; shift ;;
-    --set-webhook-secret) SET_WEBHOOK=1; shift ;;
-    --print-webhook) PRINT_WEBHOOK=1; shift ;;
+    --set-ci-secrets) SET_CI_SECRETS=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --base-url) BASE_URL="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
@@ -160,8 +157,16 @@ fi
 
 step "Application: ${APP_NAME}"
 apps="$(api GET /applications)"
-app_uuid="$(printf '%s' "$apps" | jq -r --arg r "$REPO" --arg b "$BRANCH" \
-  '.[] | select(.git_repository == $r and .git_branch == $b) | .uuid' | head -n1)"
+# Coolify stores git_repository as "owner/repo.git", not the URL you sent, so compare the
+# normalized form. Falling back to the app name still finds it when the remote was rewritten.
+app_uuid="$(printf '%s' "$apps" | jq -r --arg r "$REPO" --arg b "$BRANCH" '
+  def norm(s): s // "" | sub("^https?://[^/]+/"; "") | sub("^git@[^:]+:"; "") | sub("\\.git$"; "");
+  .[] | select(norm(.git_repository) == norm($r) and .git_branch == $b) | .uuid' | head -n1)"
+if [ -z "$app_uuid" ]; then
+  app_uuid="$(printf '%s' "$apps" | jq -r --arg n "$APP_NAME" \
+    '.[] | select(.name == $n) | .uuid' | head -n1)"
+  [ -n "$app_uuid" ] && note "matched by name (git_repository is stored as owner/repo.git)"
+fi
 if [ -n "$app_uuid" ] && [ "$app_uuid" != null ]; then
   note "reusing existing application $app_uuid"
 else
@@ -200,21 +205,23 @@ else
   note "application uuid: ${app_uuid}"
 fi
 
-webhook="${BASE_URL}/deploy?uuid=${app_uuid}&token=${COOLIFY_API_TOKEN}"
-if [ "$PRINT_WEBHOOK" = 1 ]; then
-  note "deploy webhook: ${webhook}"
-else
-  note "deploy webhook ready (not printed: it embeds the API token)"
-fi
+# Coolify 4.1.x rejects a token in the query string (`/deploy?uuid=..&token=..` answers 401), so
+# CI authenticates the way the API documents it: a bearer header plus the app uuid.
+set_ci_secrets() {
+  command -v gh >/dev/null || die "gh is required for --set-ci-secrets"
+  printf '%s' "$COOLIFY_API_TOKEN" | gh secret set COOLIFY_API_TOKEN -R "$GH_REPO"
+  printf '%s' "$app_uuid"        | gh secret set COOLIFY_APP_UUID  -R "$GH_REPO"
+  printf '%s' "$BASE_URL"        | gh secret set COOLIFY_BASE_URL  -R "$GH_REPO"
+  note "COOLIFY_API_TOKEN, COOLIFY_APP_UUID and COOLIFY_BASE_URL stored on ${GH_REPO}"
+}
 
-if [ "$SET_WEBHOOK" = 1 ]; then
-  step "Actions secret COOLIFY_WEBHOOK_URL on ${GH_REPO}"
-  command -v gh >/dev/null || die "gh is required for --set-webhook-secret"
+if [ "$SET_CI_SECRETS" = 1 ]; then
+  step "Actions secrets on ${GH_REPO}"
   if [ "$DRY_RUN" = 1 ]; then
-    note "[dry-run] gh secret set COOLIFY_WEBHOOK_URL -R ${GH_REPO}"
+    note "[dry-run] gh secret set COOLIFY_API_TOKEN / COOLIFY_APP_UUID / COOLIFY_BASE_URL -R ${GH_REPO}"
   else
-    printf '%s' "$webhook" | gh secret set COOLIFY_WEBHOOK_URL -R "$GH_REPO"
-    note "secret set — every push to ${BRANCH} now publishes on its own"
+    set_ci_secrets
+    note "the deploy job can now publish on its own on every push to ${BRANCH}"
   fi
 fi
 
@@ -223,7 +230,7 @@ if [ "$DEPLOY" = 1 ]; then
   if [ "$DRY_RUN" = 1 ]; then
     note "[dry-run] POST /deploy?uuid=${app_uuid}"
   else
-    api POST "/deploy?uuid=${app_uuid}" | jq -c '{message, deployment_uuid: .deployment_uuid}'
+    api POST "/deploy?uuid=${app_uuid}" | jq -c '{queued: .deployments[0].message, deployment_uuid: .deployments[0].deployment_uuid}'
     note "watch it in Coolify, or: curl -H \"Authorization: Bearer \$COOLIFY_API_TOKEN\" ${BASE_URL}/applications/${app_uuid}"
   fi
 fi
