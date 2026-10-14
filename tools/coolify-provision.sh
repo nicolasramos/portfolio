@@ -102,8 +102,7 @@ api() {
 
 mutate() { # METHOD PATH BODY LABEL
   if [ "$DRY_RUN" = 1 ]; then
-    note "[dry-run] $1 $2"
-    note "          $4"
+    { note "[dry-run] $1 $2"; note "          $4"; } >&2
     printf '%s' "$3"
     return 0
   fi
@@ -190,7 +189,7 @@ if [ "$SET_WEBHOOK" = 1 ]; then
   if [ "$DRY_RUN" = 1 ]; then
     note "[dry-run] gh secret set COOLIFY_WEBHOOK_URL -R ${GH_REPO}"
   else
-    printf '%s' "$webhook" | gh secret set COOLIFY_WEBHOOK_URL -R "$GH_REPO" --body -
+    printf '%s' "$webhook" | gh secret set COOLIFY_WEBHOOK_URL -R "$GH_REPO"
     note "secret set — every push to ${BRANCH} now publishes on its own"
   fi
 fi
