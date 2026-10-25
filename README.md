@@ -107,10 +107,25 @@ repository with build command `npm ci && npm run build` and output directory `di
 `nicolasramos.es` and `www.nicolasramos.es` as custom domains.
 
 **The Coolify path stays wired** as the self-hosted option: GitHub Actions builds an image to
-ghcr.io and posts it to `secrets.COOLIFY_WEBHOOK_URL`; Coolify detects the `Dockerfile` (node
-builds, nginx serves `dist/`), and `nginx/default.conf` carries the same redirects and caching
-as `_redirects` and `_headers`. The trade is that every visit pulls ~22 MB through your own
-line and the site is only as up as that machine.
+ghcr.io and then calls `POST /api/v1/deploy?uuid=…` with a bearer token; Coolify detects the
+`Dockerfile` (node builds, nginx serves `dist/`), and `nginx/default.conf` carries the same
+redirects and caching as `_redirects` and `_headers`. The trade is that every visit pulls ~22 MB
+through the host's line and the site is only as up as that machine.
+
+To wire that path without clicking through the panel:
+
+```bash
+export COOLIFY_API_TOKEN=cn_...                       # created by a member of the owning team
+./tools/coolify-provision.sh --dry-run               # reads Coolify, prints what it would do
+./tools/coolify-provision.sh --set-ci-secrets        # project + app + domains + Actions secrets
+```
+
+The script is idempotent — it reuses the project and the application when they already exist — and
+it needs no GitHub App because the repository is public (`POST /applications/public`). CI
+authenticates the documented way, a bearer header plus the app uuid: `--set-ci-secrets` stores
+`COOLIFY_API_TOKEN`, `COOLIFY_APP_UUID` and `COOLIFY_BASE_URL`. Coolify 4.1.x answers `401` to the
+older `?token=` webhook URL, so it is not used. Give the token the minimum abilities and revoke it
+once the app is wired.
 
 **GitHub Pages** works mechanically (`actions/deploy-pages` publishing `dist/`), but it cannot
 issue the 301s the old Odoo URLs depend on and it caps bandwidth, so it is a poor home for a
