@@ -257,9 +257,9 @@ export default {
   },
   about: {
     eyebrow: "Sobre mí",
-    title: "Quince años haciendo que el software trabaje para la empresa",
+    title: "Más de quince años haciendo que el software trabaje para la empresa",
     lead:
-      "Empecé con Odoo cuando todavía se llamaba OpenERP y sigo aquí porque es la pieza que ordena una empresa. Desde hace unos años, además, construyo los agentes de IA que lo hacen funcionar solo.",
+      "Empecé con Odoo cuando todavía se llamaba TinyERP, antes de que fuera OpenERP y mucho antes de llamarse Odoo. Sigo aquí porque es la pieza que ordena una empresa. Desde hace unos años, además, construyo los agentes de IA que lo hacen funcionar solo.",
     body: [
       "Trabajo desde Tenerife, Islas Canarias, para empresas de España y de otros países de la Unión Europea. He pasado por implementaciones críticas, migraciones que no podían fallar y fábricas donde un minuto de parada se paga.",
       "Mi forma de trabajar es sencilla: primero entiendo el negocio, luego escribo código y después dejo que tu equipo lo maneje. No me interesa un proyecto que solo yo pueda mantener.",
