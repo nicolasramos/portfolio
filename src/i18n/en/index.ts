@@ -257,9 +257,9 @@ export default {
   },
   about: {
     eyebrow: "About me",
-    title: "Fifteen years making software work for the business",
+    title: "More than fifteen years making software work for the business",
     lead:
-      "I started with Odoo when it was still called OpenERP and I am still here because it is the piece that puts a company in order. In recent years I also build the AI agents that make it run itself.",
+      "I started with Odoo when it was still called TinyERP, before it became OpenERP and long before it became Odoo. I am still here because it is the piece that puts a company in order. In recent years I also build the AI agents that make it run itself.",
     body: [
       "I work from Tenerife, Canary Islands, for companies in Spain and elsewhere in the European Union. I have been through critical implementations, migrations that could not fail, and factories where one minute of downtime has a price.",
       "My way of working is simple: understand the business first, then write code, then hand it over so your team can run it. I have no interest in a project only I can maintain.",
